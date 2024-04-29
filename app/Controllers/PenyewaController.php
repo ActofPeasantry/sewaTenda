@@ -123,7 +123,6 @@ class PenyewaController extends BaseController
     {
         $detailModel = new DetailPembayaran();
         $detail = $detailModel->getDetailByPembayaranId($pesananId)->get()->getResultArray();
-        // $data['detail'] = $detail;
 
         return $this->response->setJSON($detail);
     }

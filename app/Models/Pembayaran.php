@@ -124,34 +124,81 @@ class Pembayaran extends Model
 
     public function getPembayaranWithTendaByPenyewaAndStatus($penyewaId, $status)
     {
-        $this->select('pembayarans.*, tendas.kode, tendas.nama, tendas.ukuran, tendas.harga, tendas.sisa, tendas.gambar, tendas.kategori_id');
-
-        $this->join('tendas', 'pembayarans.tenda_id = tendas.id');
-
-        $this->where('pembayarans.is_deleted', 0);
-
-        $this->where('pembayarans.penyewa_id', $penyewaId);
-
-        $this->where('pembayarans.sudah_bayar', $status);
-
-        $this->orderBy('pembayarans.bukti_pembayaran', 'asc');
-        $this->orderBy('pembayarans.id', 'asc');
-
-        return $this;
-    }
-
-    public function getPembayaranByPembayaranIdList($pembayaranIdList)
-    {
-        $this->select('pembayarans.*, detail_pembayarans.*, 
-        tendas.kode, tendas.nama, tendas.ukuran, tendas.harga, tendas.sisa, tendas.gambar, tendas.kategori_id')
-            ->join('detail_pembayarans', 'detail_pembayarans.pembayaran_id = pembayarans.id')
+        $this->select('pembayarans.*, tendas.*')
             ->join('tendas', 'detail_pembayarans.tenda_id = tendas.id')
-            ->where('pembayarans.is_deleted', 0)
-            ->whereIn('pembayarans.id', $pembayaranIdList)
+            ->where([
+                'detail_pembayarans.is_deleted' => 0,
+                'pembayarans.penyewa_id' => $penyewaId,
+                'pembayarans.sudah_bayar' => $status
+            ])
             ->orderBy('pembayarans.bukti_pembayaran', 'asc')
             ->orderBy('pembayarans.id', 'asc');
 
         return $this;
+    }
+
+    // My TAMPERING
+    public function getPembayaranByPenyewaAndStatus($penyewaId, $status)
+    {
+        $this->select('pembayarans.*')
+            ->where([
+                'pembayarans.is_deleted' => 0,
+                'pembayarans.penyewa_id' => $penyewaId,
+                'pembayarans.sudah_bayar' => $status,
+            ])
+            ->orderBy('pembayarans.bukti_pembayaran', 'asc')
+            ->orderBy('pembayarans.id', 'asc');
+        return $this;
+    }
+    public function getPembayaranCostByPenyewaAndStatus($penyewaId, $status)
+    {
+        // Get paid pembayaran with status for the given penyewaId
+        $getPembayarans = $this->getPembayaranByPenyewaAndStatus($penyewaId, $status)->get()->getResultArray();
+
+        if (!empty($getPembayarans)) {
+            $total_cost_data = [];
+            foreach ($getPembayarans as $getPembayaran) {
+                // Retrieve the first unpaid pembayaran ID
+                $pembayaranId = $getPembayaran['id'];
+
+                // Initialize DetailPembayaran model
+                $getDetails = new DetailPembayaran();
+
+                // Perform join with 'tendas' table
+                $getCosts = $getDetails
+                    ->select('detail_pembayarans.*, tendas.harga') // Select desired columns
+                    ->join('tendas', 'detail_pembayarans.tenda_id = tendas.id') // Join 'tendas' table
+                    ->where(['detail_pembayarans.pembayaran_id' => $pembayaranId])
+                    ->get()
+                    ->getResultArray();
+
+                // Calculate total cost based on retrieved data
+                $total_cost = 0;
+                foreach ($getCosts as $cost) {
+                    $total_cost += $cost['lama_sewa'] * $cost['jumlah_tenda'] * $cost['harga'];
+                }
+                array_push($total_cost_data, $total_cost);
+            }
+            return $total_cost_data;
+        }
+        return 0; // Return 0 if no unpaid pembayaran found
+    }
+    // END OF MY TAMPERING
+    public function getPembayaranByPembayaranIdList($pembayaranIdList)
+    {
+        // Initialize DetailPembayaran model
+        $getDetails = new DetailPembayaran();
+
+        $getDetails->select('pembayarans.*, detail_pembayarans.*, 
+        tendas.*')
+            ->join('pembayarans', 'detail_pembayarans.pembayaran_id = pembayarans.id')
+            ->join('tendas', 'detail_pembayarans.tenda_id = tendas.id')
+            ->where('detail_pembayarans.is_deleted', 0)
+            ->whereIn('pembayarans.id', $pembayaranIdList)
+            ->orderBy('pembayarans.bukti_pembayaran', 'asc')
+            ->orderBy('pembayarans.id', 'asc');
+
+        return $getDetails;
     }
 
     public function getPembayaranByStatus($status)

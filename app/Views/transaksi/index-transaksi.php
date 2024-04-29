@@ -55,7 +55,7 @@
 										<td style="text-align : center"><?= $transaksi['nik'] ?></td>
 										<td style="text-align : center"><?= $transaksi['nama'] ?></td>
 										<td style="text-align : center"><?= $transaksi['no_hp'] ?></td>
-										<td style="text-align : center"><?= $transaksi['jumlah_pesanan'] ?> Tenda</td>
+										<td style="text-align : center"><?= $transaksi['jumlah_pesanan'] ?> Pesanan</td>
 										<td style="text-align : center">
 											<form action="/confirm-transaksi-view" method="post">
 												<input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" />

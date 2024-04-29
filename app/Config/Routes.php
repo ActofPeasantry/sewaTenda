@@ -64,6 +64,7 @@ $routes->group('', ['filter' => 'admRole'], function ($routes) {
     $routes->get('/transaksi-approved', 'TransaksiController::indexTransaksiApproved');
     $routes->get('/transaksi-rejected', 'TransaksiController::indexTransaksiRejected');
     $routes->post('/confirm-transaksi-view', 'TransaksiController::confirmTransaksiView');
+    $routes->get('/confirm-transaksi-view/detail/(:num)', 'TransaksiController::confirmTransaksiViewDetail/$1');
     $routes->post('/confirm-transaksi', 'TransaksiController::confirmTransaksi');
     $routes->get('/download-pdf-transaksi-all/(:num)', 'TransaksiController::generatePDFTransaksiAll/$1');
 });
