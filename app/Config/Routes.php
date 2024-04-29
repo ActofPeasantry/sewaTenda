@@ -36,30 +36,30 @@ $routes->addRedirect('/', '/catalog');
 $routes->post('login', 'LoginController::login');
 $routes->get('logout', 'LoginController::logout');
 
-$routes->group('', ['filter' => 'admRole'], function($routes) {
-    
+$routes->group('', ['filter' => 'admRole'], function ($routes) {
+
     $routes->get('/dashboard', 'Home::index');
 
     $routes->get('/user', 'UserController::index');
     $routes->post('/add-edit-user-view', 'UserController::addEditUserView');
     $routes->post('/add-edit-user', 'UserController::addEditUser');
     $routes->get('/user/delete/(:num)', 'UserController::delete/$1');
-    
+
     $routes->get('/penyewa', 'PenyewaController::index');
     $routes->post('/edit-penyewa-view', 'PenyewaController::editPenyewaView');
     $routes->post('/edit-penyewa', 'PenyewaController::editPenyewa');
     $routes->get('/penyewa/delete/(:num)', 'PenyewaController::delete/$1');
-    
+
     $routes->get('/tenda', 'TendaController::index');
     $routes->post('/add-edit-tenda-view', 'TendaController::addEditTendaView');
     $routes->post('/add-edit-tenda', 'TendaController::addEditTenda');
     $routes->get('/tenda/delete/(:num)', 'TendaController::deleteTenda/$1');
-    
+
     $routes->get('/kategori', 'TendaController::indexKategori');
     $routes->post('/add-edit-kategori-view', 'TendaController::addEditKategoriView');
     $routes->post('/add-edit-kategori-tenda', 'TendaController::addEditKategori');
     $routes->get('/kategori/delete/(:num)', 'TendaController::delete/$1');
-    
+
     $routes->get('/transaksi-progress', 'TransaksiController::indexTransaksiProgress');
     $routes->get('/transaksi-approved', 'TransaksiController::indexTransaksiApproved');
     $routes->get('/transaksi-rejected', 'TransaksiController::indexTransaksiRejected');
@@ -75,12 +75,13 @@ $routes->get('/register-update-account', 'UserController::registerUpdateAccountV
 $routes->post('register-update-account', 'UserController::registerUpdateAccount');
 
 
-$routes->group('', ['filter' => 'penyewaRole'], function($routes) {
+$routes->group('', ['filter' => 'penyewaRole'], function ($routes) {
     $routes->get('/cart', 'PenyewaController::cart');
     $routes->get('/pesanan', 'PenyewaController::pesanan');
+    $routes->get('/pesanan/detail/(:num)', 'PenyewaController::detailPesanan/$1');
     $routes->get('/prosespesanan', 'PenyewaController::historyPesanan');
     $routes->post('submit-pembayaran', 'PenyewaController::submitPembayaran');
-    $routes->post('update-pembayaran-from-pesanan', 'PenyewaController::updatePembayaranFromPesanan');     
+    $routes->post('update-pembayaran-from-pesanan', 'PenyewaController::updatePembayaranFromPesanan');
 });
 
 /*

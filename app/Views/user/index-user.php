@@ -15,47 +15,47 @@
 			</div>
 			<div class="card-content collapse show">
 				<div class="card-body">
-                    <?php if (session()->getFlashdata('success')) : ?>
-                        <p><code class="highlighter-rouge success"><?= session()->getFlashdata('success') ?></code></p>                    
-                    <?php endif; ?>
+					<?php if (session()->getFlashdata('success')) : ?>
+						<p><code class="highlighter-rouge success"><?= session()->getFlashdata('success') ?></code></p>
+					<?php endif; ?>
 					<?php if (session()->getFlashdata('error')) : ?>
-                        <p><code class="highlighter-rouge danger"><?= session()->getFlashdata('error') ?></code></p>                    
-                    <?php endif; ?>
-                    <form action="/add-edit-user-view" method="post">
-                        <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" />
-                        <input type="hidden" name = "userId" value=" ">
-                        <input type="hidden" name = "action" value="add">
-                        <p class="card-text"><button type="submit" class="btn btn-primary btn-min-width mr-1 mb-1"><i class="ft-plus"></i> Add User</button></p>
-                    </form>
+						<p><code class="highlighter-rouge danger"><?= session()->getFlashdata('error') ?></code></p>
+					<?php endif; ?>
+					<form action="/add-edit-user-view" method="post">
+						<input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" />
+						<input type="hidden" name="userId" value=" ">
+						<input type="hidden" name="action" value="add">
+						<p class="card-text"><button type="submit" class="btn btn-primary btn-min-width mr-1 mb-1"><i class="ft-plus"></i> Add User</button></p>
+					</form>
 					<div class="table-responsive">
-						<table class="table table-striped table-borderless table-hover" id = "myTable">
+						<table class="table table-striped table-borderless table-hover" id="myTable">
 							<thead>
 								<tr>
 									<th>No</th>
-									<th style = "text-align : center">Username</th>
-									<th style = "text-align : center">Email</th>
-									<th style = "text-align : center">Action</th>
+									<th style="text-align : center">Username</th>
+									<th style="text-align : center">Email</th>
+									<th style="text-align : center">Action</th>
 								</tr>
 							</thead>
 							<tbody>
-                                <?php $i = 1?>
-                                <?php foreach($userList as $user): ?>
-								<tr>
-									<th scope="row"><?= $i ?></th>
-									<td style = "text-align : center"><?=$user['username']?></td>
-									<td style = "text-align : center"><?=$user['email']?></td>
-									<td style = "text-align : center">
-                                    <form action="/add-edit-user-view" method="post">
-                                        <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" />
-                                        <input type="hidden" name = "userId" value=<?=$user['id']?>>
-                                        <input type="hidden" name = "action" value="edit">
-                                        <button type="submit" class="btn btn-sm btn-success"><i class="ft-edit"></i></button>
-                                        <a style="color: white; text-decoration: none;" href = "user/delete/<?=$user['id']?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete Data User <?=$user['email']?>? ')"><i class="ft-delete"></i></a>
-                                    </form>
-                                    </td>
-								</tr>
-                                <?php $i++?>
-                                <?php endforeach; ?>
+								<?php $i = 1 ?>
+								<?php foreach ($userList as $user) : ?>
+									<tr>
+										<th scope="row"><?= $i ?></th>
+										<td style="text-align : center"><?= $user['username'] ?></td>
+										<td style="text-align : center"><?= $user['email'] ?></td>
+										<td style="text-align : center">
+											<form action="/add-edit-user-view" method="post">
+												<input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" />
+												<input type="hidden" name="userId" value=<?= $user['id'] ?>>
+												<input type="hidden" name="action" value="edit">
+												<button type="submit" class="btn btn-sm btn-success"><i class="ft-edit"></i></button>
+												<a style="color: white; text-decoration: none;" href="user/delete/<?= $user['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete Data User <?= $user['email'] ?>? ')"><i class="ft-delete"></i></a>
+											</form>
+										</td>
+									</tr>
+									<?php $i++ ?>
+								<?php endforeach; ?>
 							</tbody>
 						</table>
 					</div>
@@ -68,9 +68,8 @@
 
 <?= $this->section('js') ?>
 <script>
-    let table1 = new DataTable('#myTable', {
+	let table1 = new DataTable('#myTable', {
 
-    });
-
+	});
 </script>
 <?= $this->endSection() ?>

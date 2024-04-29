@@ -38,9 +38,9 @@ class Role extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-    
+
     public function users()
     {
-        return $this->hasMany(UserModel::class, 'role_id', 'id');
+        return $this->hasMany(User::class, 'role_id', 'id');
     }
 }

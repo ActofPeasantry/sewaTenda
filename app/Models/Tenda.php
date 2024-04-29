@@ -46,23 +46,23 @@ class Tenda extends Model
 
         // Perform the join with the 'kategoris' table
         $this->join('kategoris', 'tendas.kategori_id = kategoris.id');
-        
+
         // Filter the data where 'is_deleted' column is 0
         $this->where('tendas.is_deleted', 0);
-        
+
         // Order the data by 'tendas.id' in ascending order
         $this->orderBy('tendas.id', 'asc');
-        
+
         // Perform the query and return the result
         return $this;
     }
 
     public function kategoris()
     {
-        return $this->belongsTo(KategoriModel::class, 'kategori_id', 'id');
+        return $this->belongsTo(Kategori::class, 'kategori_id', 'id');
     }
-    public function pembayarans()
+    public function detailPembayarans()
     {
-        return $this->hasMany(PembayaranModel::class, 'tenda_id', 'id');
+        return $this->belongsTo(detailPembayaran::class, 'tenda_id', 'id');
     }
 }

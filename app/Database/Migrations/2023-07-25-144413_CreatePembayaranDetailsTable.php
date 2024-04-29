@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreatePembayaransTable extends Migration
+class CreatePembayaranDetailsTable extends Migration
 {
     public function up()
     {
@@ -15,32 +15,23 @@ class CreatePembayaransTable extends Migration
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
-            'penyewa_id' => [
+            'tenda_id' => [
                 'type' => 'INT',
                 'constraint' => 5,
                 'unsigned' => true,
             ],
-            'tanggal_pembayaran'   => [
-                'type'       => 'DATETIME',
-                'null'       => true,
+            'pembayaran_id' => [
+                'type' => 'INT',
+                'constraint' => 5,
+                'unsigned' => true,
             ],
-            'bukti_pembayaran'   => [
-                'type'       => 'TEXT',
-                'null'       => true,
+            'jumlah_tenda'   => [
+                'type' => 'INT',
+                'constraint' => 5,
             ],
-            'sudah_bayar'      => [
-                'type' => 'TINYINT',
-                'constraint' => 1,
-            ],
-            'catatan'   => [
-                'type'       => 'TEXT',
-            ],
-            'alamat_kirim'   => [
-                'type'       => 'TEXT',
-            ],
-            'tanggal_mulai_sewa' => [
-                'type'       => 'DATETIME',
-                'null'       => true,
+            'lama_sewa'      => [
+                'type' => 'INT',
+                'constraint' => 5,
             ],
             'is_deleted' => [
                 'type'       => 'BOOLEAN',
@@ -57,13 +48,13 @@ class CreatePembayaransTable extends Migration
             'deleted_at' => ['type' => 'datetime', 'null' => true],
         ]);
         $this->forge->addPrimaryKey('id');
-        $this->forge->addForeignKey('penyewa_id', 'penyewas', 'id');
-        $this->forge->createTable('pembayarans');
+        $this->forge->addForeignKey('pembayaran_id', 'pembayarans', 'id');
+        $this->forge->addForeignKey('tenda_id', 'tendas', 'id');
+        $this->forge->createTable('detail_pembayarans');
     }
 
     public function down()
-    { {
-            $this->forge->dropTable('pembayarans');
-        }
+    {
+        //
     }
 }
