@@ -105,21 +105,23 @@ class Pembayaran extends Model
         return $this;
     }
 
+    // Tampered
     public function getPembayaranSudahBayarWithTenda($penyewaId)
     {
-        $this->select('pembayarans.*, tendas.kode, tendas.nama, tendas.ukuran, tendas.harga, tendas.sisa, tendas.gambar, tendas.kategori_id');
+        // Initialize DetailPembayaran model
+        $getDetails = new DetailPembayaran();
 
-        $this->join('tendas', 'pembayarans.tenda_id = tendas.id');
+        $getDetails->select('pembayarans.*, detail_pembayarans.*, 
+        tendas.*')
+            ->join('pembayarans', 'detail_pembayarans.pembayaran_id = pembayarans.id')
+            ->join('tendas', 'detail_pembayarans.tenda_id = tendas.id')
+            ->where('pembayarans.is_deleted', 0)
+            ->where('pembayarans.penyewa_id', $penyewaId)
+            ->where('tanggal_pembayaran IS NOT NULL')
+            ->where('bukti_pembayaran IS NOT NULL')
+            ->orderBy('pembayarans.id', 'asc');
 
-        $this->where('pembayarans.is_deleted', 0);
-        $this->where('pembayarans.penyewa_id', $penyewaId);
-
-        $this->where('tanggal_pembayaran IS NOT NULL');
-        $this->where('bukti_pembayaran IS NOT NULL');
-
-        $this->orderBy('pembayarans.id', 'asc');
-
-        return $this;
+        return $getDetails;
     }
 
     public function getPembayaranWithTendaByPenyewaAndStatus($penyewaId, $status)
@@ -201,20 +203,23 @@ class Pembayaran extends Model
         return $getDetails;
     }
 
+    // Tampered
     public function getPembayaranByStatus($status)
     {
-        $this->select('pembayarans.*, tendas.nama AS nama_tenda, tendas.harga AS harga_tenda, penyewas.nama AS nama_penyewa, ');
+        // Initialize DetailPembayaran model
+        $getDetails = new DetailPembayaran();
 
-        $this->join('tendas', 'pembayarans.tenda_id = tendas.id');
-        $this->join('penyewas', 'pembayarans.penyewa_id = penyewas.id');
+        $getDetails->select('
+            detail_pembayarans.*, pembayarans.*, tendas.nama AS nama_tenda, tendas.harga AS harga_tenda, penyewas.nama AS nama_penyewa,
+        ')
+            ->join('pembayarans', 'detail_pembayarans.pembayaran_id = pembayarans.id')
+            ->join('tendas', 'detail_pembayarans.tenda_id = tendas.id')
+            ->join('penyewas', 'pembayarans.penyewa_id = penyewas.id')
+            ->where(['pembayarans.is_deleted' => 0, 'pembayarans.sudah_bayar' => $status])
+            ->orderBy('pembayarans.bukti_pembayaran', 'asc')
+            ->orderBy('pembayarans.id', 'asc');
 
-        $this->where('pembayarans.is_deleted', 0);
-        $this->where('pembayarans.sudah_bayar', $status);
-
-        $this->orderBy('pembayarans.bukti_pembayaran', 'asc');
-        $this->orderBy('pembayarans.id', 'asc');
-
-        return $this;
+        return $getDetails;
     }
 
     public function detailPembayarans()
