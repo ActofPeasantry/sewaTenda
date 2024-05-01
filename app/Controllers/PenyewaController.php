@@ -44,7 +44,7 @@ class PenyewaController extends BaseController
         $data = [
             'cardReload' => '',
             'headerTitle' => 'Rama Tenda : Catalog',
-            'breadcrumbLink' => session()->get('user') ? '<a href="/cart">Cart</a> - <a href="/pesanan">Pesanan</a> - <a href="/cart">Proses Pesanan</a>' : '<a href="/login">Login</a>',
+            'breadcrumbLink' => session()->get('user') ? '<a href="/cart">Cart</a> - <a href="/pesanan">Pesanan</a> - <a href="/prosespesanan">Proses Pesanan</a>' : '<a href="/login">Login</a>',
             'tendaList' => $tendaList->paginate(6, 'tenda'),
             'pager' => $tendaList->pager,
             'nomor' => nomor($this->request->getVar('page_tenda'), 6),
@@ -104,7 +104,7 @@ class PenyewaController extends BaseController
 
         // $pembayaranBelumBayarList = $pembayaranModel->getPembayaranBelumBayarWithTenda(session()->get('penyewa')['id'])->get()->getResultArray();
         $pembayaranBelumBayarList = $pembayaranModel->getUnpaidPembayaran(session()->get('penyewa')['id'])->get()->getResultArray();
-        $getCost = $pembayaranModel->getUnpaidPembayaranCost(session()->get('penyewa')['id']);
+        $getCost = $pembayaranModel->getPembayaranCost(session()->get('penyewa')['id'], false);
         // var_dump($getCost);
 
 
@@ -131,14 +131,16 @@ class PenyewaController extends BaseController
     {
         $pembayaranModel = new Pembayaran();
 
-        $pembayaranSudahBayarList = $pembayaranModel->getPembayaranSudahBayarWithTenda(session()->get('penyewa')['id'])->get()->getResultArray();
+        $pembayaranSudahBayarList = $pembayaranModel->getPaidPembayaran(session()->get('penyewa')['id'])->get()->getResultArray();
+        $getCost = $pembayaranModel->getPembayaranCost(session()->get('penyewa')['id'], true);
 
         $data = [
             'cardReload' => '',
             'headerTitle' => 'Pesanan',
             'cardAlignment' => 'text-center',
             'breadcrumbLink' => '<a href="/catalog">Catalog</a> - <a href="/pesanan">Pesanan</a> - <a href="/cart">Cart</a>',
-            'pembayaranSudahBayarList' => $pembayaranSudahBayarList
+            'pembayaranSudahBayarList' => $pembayaranSudahBayarList,
+            'totalBiaya' => $getCost
         ];
         return view('penyewa/historyPesanan', $data);
     }

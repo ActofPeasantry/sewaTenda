@@ -54,10 +54,29 @@ class Pembayaran extends Model
         return $this;
     }
 
-    public function getUnpaidPembayaranCost($penyewaId)
+    // Tampered
+    public function getPaidPembayaran($penyewaId)
     {
-        // Get unpaid pembayaran for the given penyewaId
-        $getPembayarans = $this->getUnpaidPembayaran($penyewaId)->get()->getResultArray();
+        $this->select('pembayarans.*')
+            ->where('pembayarans.is_deleted', 0)
+            ->where('pembayarans.penyewa_id', $penyewaId)
+            ->where('tanggal_pembayaran IS NOT NULL')
+            ->where('bukti_pembayaran IS NOT NULL')
+            ->orderBy('pembayarans.id', 'asc');
+
+        return $this;
+    }
+
+    public function getPembayaranCost($penyewaId, $arePaid)
+    {
+        if ($arePaid === true) {
+            // Get unpaid pembayaran for the given penyewaId
+            $getPembayarans = $this->getPaidPembayaran($penyewaId)->get()->getResultArray();
+        } else {
+            // Get unpaid pembayaran for the given penyewaId
+            $getPembayarans = $this->getUnpaidPembayaran($penyewaId)->get()->getResultArray();
+        }
+
 
         if (!empty($getPembayarans)) {
             $total_cost_data = [];
@@ -103,25 +122,6 @@ class Pembayaran extends Model
         $this->orderBy('pembayarans.id', 'asc');
 
         return $this;
-    }
-
-    // Tampered
-    public function getPembayaranSudahBayarWithTenda($penyewaId)
-    {
-        // Initialize DetailPembayaran model
-        $getDetails = new DetailPembayaran();
-
-        $getDetails->select('pembayarans.*, detail_pembayarans.*, 
-        tendas.*')
-            ->join('pembayarans', 'detail_pembayarans.pembayaran_id = pembayarans.id')
-            ->join('tendas', 'detail_pembayarans.tenda_id = tendas.id')
-            ->where('pembayarans.is_deleted', 0)
-            ->where('pembayarans.penyewa_id', $penyewaId)
-            ->where('tanggal_pembayaran IS NOT NULL')
-            ->where('bukti_pembayaran IS NOT NULL')
-            ->orderBy('pembayarans.id', 'asc');
-
-        return $getDetails;
     }
 
     public function getPembayaranWithTendaByPenyewaAndStatus($penyewaId, $status)
@@ -221,6 +221,7 @@ class Pembayaran extends Model
 
         return $getDetails;
     }
+
 
     public function detailPembayarans()
     {
