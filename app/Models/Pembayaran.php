@@ -13,7 +13,12 @@ class Pembayaran extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['tanggal_pembayaran', 'is_deleted', 'jumlah_tenda', 'bukti_pembayaran', 'sudah_bayar', 'catatan', 'alamat_kirim', 'tanggal_mulai_sewa', 'penyewa_id', 'tenda_id'];
+    protected $allowedFields    = [
+        'tanggal_pembayaran', 'is_deleted', 'jumlah_tenda',
+        'bukti_pembayaran', 'pakai_dp', 'bukti_pembayaran_dp',
+        'status_pembayaran', 'status_lunas', 'catatan',
+        'alamat_kirim', 'tanggal_mulai_sewa', 'user_id', 'tenda_id'
+    ];
 
     // Dates
     protected $useTimestamps = true;
@@ -45,10 +50,10 @@ class Pembayaran extends Model
         $this->select('pembayarans.*')
             ->where([
                 'pembayarans.is_deleted' => 0,
-                'pembayarans.penyewa_id' => $penyewaId,
+                'pembayarans.user_id' => $penyewaId,
                 'pembayarans.tanggal_pembayaran' => NULL,
                 'pembayarans.bukti_pembayaran' => NULL,
-                'pembayarans.sudah_bayar' => 0,
+                'pembayarans.status_pembayaran' => 0,
             ])
             ->orderBy('pembayarans.id', 'asc');
         return $this;
@@ -59,9 +64,13 @@ class Pembayaran extends Model
     {
         $this->select('pembayarans.*')
             ->where('pembayarans.is_deleted', 0)
-            ->where('pembayarans.penyewa_id', $penyewaId)
+            ->where('pembayarans.user_id', $penyewaId)
             ->where('tanggal_pembayaran IS NOT NULL')
+            ->groupStart()
             ->where('bukti_pembayaran IS NOT NULL')
+            ->orWhere('bukti_pembayaran_dp IS NOT NULL')
+            ->groupEnd()
+            // ->where('status_pembayaran', 2)
             ->orderBy('pembayarans.id', 'asc');
 
         return $this;
@@ -114,7 +123,7 @@ class Pembayaran extends Model
         $this->join('tendas', 'pembayarans.tenda_id = tendas.id');
 
         $this->where('pembayarans.is_deleted', 0);
-        $this->where('pembayarans.penyewa_id', $penyewaId);
+        $this->where('pembayarans.user_id', $penyewaId);
 
         $this->where('tanggal_pembayaran IS NULL');
         $this->where('bukti_pembayaran IS NULL');
@@ -130,8 +139,8 @@ class Pembayaran extends Model
             ->join('tendas', 'detail_pembayarans.tenda_id = tendas.id')
             ->where([
                 'detail_pembayarans.is_deleted' => 0,
-                'pembayarans.penyewa_id' => $penyewaId,
-                'pembayarans.sudah_bayar' => $status
+                'pembayarans.user_id' => $penyewaId,
+                'pembayarans.status_pembayaran' => $status
             ])
             ->orderBy('pembayarans.bukti_pembayaran', 'asc')
             ->orderBy('pembayarans.id', 'asc');
@@ -145,8 +154,8 @@ class Pembayaran extends Model
         $this->select('pembayarans.*')
             ->where([
                 'pembayarans.is_deleted' => 0,
-                'pembayarans.penyewa_id' => $penyewaId,
-                'pembayarans.sudah_bayar' => $status,
+                'pembayarans.user_id' => $penyewaId,
+                'pembayarans.status_pembayaran' => $status,
             ])
             ->orderBy('pembayarans.bukti_pembayaran', 'asc')
             ->orderBy('pembayarans.id', 'asc');
@@ -210,14 +219,13 @@ class Pembayaran extends Model
         $getDetails = new DetailPembayaran();
 
         $getDetails->select('
-            detail_pembayarans.*, pembayarans.*, tendas.nama AS nama_tenda, tendas.harga AS harga_tenda, penyewas.nama AS nama_penyewa,
+            detail_pembayarans.*, pembayarans.*, tendas.nama AS nama_tenda, tendas.harga AS harga_tenda, users.nama AS nama_penyewa,
         ')
             ->join('pembayarans', 'detail_pembayarans.pembayaran_id = pembayarans.id')
             ->join('tendas', 'detail_pembayarans.tenda_id = tendas.id')
-            ->join('penyewas', 'pembayarans.penyewa_id = penyewas.id')
-            ->where(['pembayarans.is_deleted' => 0, 'pembayarans.sudah_bayar' => $status])
-            ->orderBy('pembayarans.bukti_pembayaran', 'asc')
-            ->orderBy('pembayarans.id', 'asc');
+            ->join('users', 'pembayarans.user_id = users.id')
+            ->where(['pembayarans.is_deleted' => 0, 'pembayarans.status_pembayaran' => $status])
+            ->orderBy('pembayarans.id', 'desc');
 
         return $getDetails;
     }
@@ -228,8 +236,8 @@ class Pembayaran extends Model
         return $this->hasMany(detailPembayaran::class, 'pembayaran_id', 'id');
     }
 
-    public function penyewas()
+    public function users()
     {
-        return $this->belongsTo(Penyewa::class, 'penyewa_id', 'id');
+        return $this->belongsTo(Penyewa::class, 'user_id', 'id');
     }
 }

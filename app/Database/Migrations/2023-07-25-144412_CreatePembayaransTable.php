@@ -15,7 +15,7 @@ class CreatePembayaransTable extends Migration
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
-            'penyewa_id' => [
+            'user_id' => [
                 'type' => 'INT',
                 'constraint' => 5,
                 'unsigned' => true,
@@ -28,7 +28,18 @@ class CreatePembayaransTable extends Migration
                 'type'       => 'TEXT',
                 'null'       => true,
             ],
-            'sudah_bayar'      => [
+            'pakai_dp'      => [
+                'type' => 'BOOLEAN',
+            ],
+            'bukti_pembayaran_dp'   => [
+                'type'       => 'TEXT',
+                'null'       => true,
+            ],
+            'status_pembayaran'      => [
+                'type' => 'TINYINT',
+                'constraint' => 1,
+            ],
+            'status_lunas'      => [
                 'type' => 'TINYINT',
                 'constraint' => 1,
             ],
@@ -57,7 +68,7 @@ class CreatePembayaransTable extends Migration
             'deleted_at' => ['type' => 'datetime', 'null' => true],
         ]);
         $this->forge->addPrimaryKey('id');
-        $this->forge->addForeignKey('penyewa_id', 'penyewas', 'id');
+        $this->forge->addForeignKey('user_id', 'users', 'id');
         $this->forge->createTable('pembayarans');
     }
 

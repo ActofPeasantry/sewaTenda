@@ -83,6 +83,7 @@ $routes->group('', ['filter' => 'penyewaRole'], function ($routes) {
     $routes->get('/prosespesanan', 'PenyewaController::historyPesanan');
     $routes->post('submit-pembayaran', 'PenyewaController::submitPembayaran');
     $routes->post('update-pembayaran-from-pesanan', 'PenyewaController::updatePembayaranFromPesanan');
+    $routes->post('update-pelunasan', 'PenyewaController::updatePelunasan');
 });
 
 /*

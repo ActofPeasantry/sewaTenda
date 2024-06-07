@@ -15,35 +15,36 @@ class UserController extends BaseController
         $userList = $userModel->getUserRoleAdmin()->get()->getResultArray();
 
         $data = [
-        'headerTitle' => 'User',
-        'navUserActive' => 'active',
-        'breadcrumbLink' => '<a href="/dashboard">Dashboard</a>',
-        'userList' => $userList
-       ];
+            'headerTitle' => 'User',
+            'navUserActive' => 'active',
+            'breadcrumbLink' => '<a href="/dashboard">Dashboard</a>',
+            'userList' => $userList
+        ];
         return view('user/index-user', $data);
     }
     public function registerUpdateAccountView()
     {
-        $data = ['cardReload' => '',
-        'headerTitle' => 'Pendaftaran',
-        'cardAlignment' => 'text-center',
-        'breadcrumbLink' => session()->get('user')?'<a href="/catalog">Catalog</a>':'<a href="/login">Login</a>'
-       ];
-
-       if(session()->get('user') && session()->get('role') && session()->get('penyewa') ){
-        $data += ['nik' => session()->get('penyewa')['nik'],
-        'nama' => session()->get('penyewa')['nama'],
-        'noHp' => session()->get('penyewa')['no_hp'],
-        'alamat' => session()->get('penyewa')['alamat'],
-        'username' => session()->get('user')['username'],
-        'email' => session()->get('user')['email'],
-        'userId' => session()->get('user')['id'],
-        'penyewaId' => session()->get('penyewa')['id'],
-        'action' => 'edit',
+        $data = [
+            'cardReload' => '',
+            'headerTitle' => 'Pendaftaran',
+            'cardAlignment' => 'text-center',
+            'breadcrumbLink' => session()->get('user') ? '<a href="/catalog">Catalog</a>' : '<a href="/login">Login</a>'
         ];
-       }else{
-        $data += ['action' => 'add'];
-       }
+
+        if (session()->get('user') && session()->get('role')) {
+            $data += [
+                'nik' => session()->get('user')['nik'],
+                'nama' => session()->get('user')['nama'],
+                'noHp' => session()->get('user')['no_hp'],
+                'alamat' => session()->get('user')['alamat'],
+                'username' => session()->get('user')['username'],
+                'email' => session()->get('user')['email'],
+                'userId' => session()->get('user')['id'],
+                'action' => 'edit',
+            ];
+        } else {
+            $data += ['action' => 'add'];
+        }
         return view('user/register-update-account', $data);
     }
 
@@ -56,17 +57,18 @@ class UserController extends BaseController
         $role = $roleModel->where('kode', 'PNY')->first();
         $roleId = null;
 
-        if(!$role){
+        if (!$role) {
             $roleModel->insert([
-                'kode' => 'PNY', 
-                'nama' => 'Penyewa', 
-                'is_delete' => 0]);
-            
+                'kode' => 'PNY',
+                'nama' => 'Penyewa',
+                'is_delete' => 0
+            ]);
+
             $roleId = $roleModel->insertID();
-        }else{
+        } else {
             $roleId = $role['id'];
         }
-        
+
         $userRequest = [
             'role_id' =>  $roleId,
             'username' => $this->request->getPost('username'),
@@ -82,16 +84,16 @@ class UserController extends BaseController
             'is_delete' => 0
         ];
 
-        if($this->request->getPost('action') == 'add'){
+        if ($this->request->getPost('action') == 'add') {
 
             $user = $userModel->where('email', $this->request->getPost('email'))->first();
             $penyewa = $penyewaModel->where('nik', $this->request->getPost('nik'))->first();
 
-            if($user){
+            if ($user) {
                 return redirect()->back()->with('error', 'Email Sudah Ada');
             }
 
-            if($penyewa){
+            if ($penyewa) {
                 return redirect()->back()->with('error', 'NIK Sudah Ada');
             }
 
@@ -100,26 +102,26 @@ class UserController extends BaseController
             $penyewaModel->insert($penyewaRequest);
         }
 
-        if($this->request->getPost('action') == 'edit'){
+        if ($this->request->getPost('action') == 'edit') {
 
             $penyewa = $penyewaModel->where('nik', $this->request->getPost('nik'))->first();
-            
-            if($penyewa && $penyewa['id']!=(int)$this->request->getPost('penyewaId')){
+
+            if ($penyewa && $penyewa['id'] != (int)$this->request->getPost('penyewaId')) {
                 return redirect()->back()->with('error', 'NIK Sudah Ada');
             }
 
             $user = $userModel->where('email', $this->request->getPost('email'))->first();
 
-            if ($user && $user['id'] != $this->request->getPost('id')){
+            if ($user && $user['id'] != $this->request->getPost('id')) {
                 return redirect()->back()->with('error', 'Email Sudah Ada');
             }
-            
+
             $userModel->update((int)$this->request->getPost('userId'), $userRequest);
             $penyewaModel->update((int)$this->request->getPost('penyewaId'), $penyewaRequest);
         }
 
 
-       return redirect()->to('/login')->with('success', 'Pendaftaran Berhasil');
+        return redirect()->to('/login')->with('success', 'Pendaftaran Berhasil');
     }
 
     public function addEditUserView()
@@ -131,14 +133,14 @@ class UserController extends BaseController
             'breadcrumbLink' => '<a href="/user">Back</a>',
         ];
 
-        if($this->request->getPost('action') == 'add'){
-            $data+=[
+        if ($this->request->getPost('action') == 'add') {
+            $data += [
                 'action' => 'add'
             ];
-        }else{
+        } else {
             $userModel = new User();
             $user = $userModel->find($this->request->getPost('userId'));
-            $data+=[
+            $data += [
                 'action' => 'edit',
                 'userId' => $user['id'],
                 'username' => $user['username'],
@@ -164,40 +166,39 @@ class UserController extends BaseController
             'is_delete' => 0
         ];
 
-        if($this->request->getPost('action') == 'add'){
+        if ($this->request->getPost('action') == 'add') {
 
             $user = $userModel->where('email', $this->request->getPost('email'))->first();
 
-            if($user){
+            if ($user) {
                 return redirect()->to('/user')->with('error', 'Email Sudah Ada');
             }
 
             $userModel->insert($userRequest);
-
-        }else{
+        } else {
 
             $user = $userModel->where('email', $this->request->getPost('email'))->first();
 
-            if ($user && $user['id'] != $this->request->getPost('id')){
+            if ($user && $user['id'] != $this->request->getPost('id')) {
                 return redirect()->to('/user')->with('error', 'Email Sudah Ada');
             }
 
             $userModel->update((int)$this->request->getPost('userId'), $userRequest);
         }
-        
+
         return redirect()->to('/user')->with('success', 'Perubahan Data User Berhasil');
     }
 
     public function delete($id)
     {
-       $userModel = new User();
+        $userModel = new User();
 
-       $user = $userModel->find($id);
-       $user['is_deleted'] = 1;
+        $user = $userModel->find($id);
+        $user['is_deleted'] = 1;
 
-       $userModel->update($user['id'], $user);
+        $userModel->update($user['id'], $user);
 
-       $userModel->delete($user['id']);
-       return redirect()->to('/user')->with('success', 'Data User Berhasil Dihapus');
+        $userModel->delete($user['id']);
+        return redirect()->to('/user')->with('success', 'Data User Berhasil Dihapus');
     }
 }

@@ -13,7 +13,11 @@ class User extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['username', 'email', 'password', 'role_id', 'is_deleted'];
+    protected $allowedFields    = [
+        'username', 'email', 'password',
+        'role_id', 'nik', 'nama',
+        'alamat', 'no_hp', 'is_deleted'
+    ];
 
     // Dates
     protected $useTimestamps = true;
@@ -44,7 +48,7 @@ class User extends Model
         $this->select('users.*');
 
         $this->join('roles', 'users.role_id = roles.id');
-        
+
         $this->where('users.is_deleted', 0);
 
         $this->where('roles.kode', 'ADM');

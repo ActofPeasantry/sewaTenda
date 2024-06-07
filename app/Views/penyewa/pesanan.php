@@ -30,23 +30,37 @@
 							<p><span class="text-bold-600"><em>Bank Sumsel <code>17409000507</code> <strong><em>An.</em></strong> Resno Ramadani</em></p>
 						<?php endif; ?>
 						<div class="form-row align-items-center">
+
 							<div class="col-auto my-1">
 								<label>Tanggal Pembayaran</label>
 							</div>
 							<div class="col-auto my-1">
 								<input type="date" class="form-control mr-sm-2" name="tanggalPembayaran" id="tanggalPembayaran" required>
 							</div>
+
 							<div class="col-auto my-1">
 								<label>Bukti Pembayaran</label>
 							</div>
 							<div class="col-auto my-1">
 								<input type="file" class="form-control mr-sm-2" name="bukti" accept="image/jpeg, image/png, image/gif" id="bukti" required>
 							</div>
+
+							<div class="col-auto my-1">
+								<label>Tipe Pembayaran</label>
+							</div>
+							<div class="col-auto my-1">
+								<select name="payment_method" class="form-control mr-sm-2">
+									<option selected>Pilih Metode Pembayaran</option>
+									<option value="1">DP</option>
+									<option value="0">Tanpa DP</option>
+								</select>
+							</div>
+
 							<div class="col-auto my-1">
 								<button type="submit" class="btn btn-primary" name="submit1">Submit Pembayaran</button>
 							</div>
 							<div class="btn-group col-auto my-1">
-								<button type="button" class="btn btn-light"><i class="la la-print"></i>Pilih Metode Pembayaran</button>
+								<button type="button" class="btn btn-light"><i class="la la-print"></i>Cetak Pembayaran</button>
 								<button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								</button>
 								<div class="dropdown-menu">

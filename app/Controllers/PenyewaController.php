@@ -36,10 +36,7 @@ class PenyewaController extends BaseController
         }
 
         $tendaModel = new Tenda();
-
         $tendaList = $tendaModel->getTendasWithKategoris();
-
-
 
         $data = [
             'cardReload' => '',
@@ -72,7 +69,7 @@ class PenyewaController extends BaseController
         $pembayaranData = [
             'alamat_kirim' => $alamat,
             'tanggal_mulai_sewa' => $tanggalMulaiSewa,
-            'penyewa_id' => session()->get('penyewa')['id'],
+            'user_id' => session()->get('user')['id'],
         ];
         $pembayaranModel->insert($pembayaranData);
         $pembayaranId = $pembayaranModel->insertID();
@@ -103,8 +100,8 @@ class PenyewaController extends BaseController
         $pembayaranModel = new Pembayaran();
 
         // $pembayaranBelumBayarList = $pembayaranModel->getPembayaranBelumBayarWithTenda(session()->get('penyewa')['id'])->get()->getResultArray();
-        $pembayaranBelumBayarList = $pembayaranModel->getUnpaidPembayaran(session()->get('penyewa')['id'])->get()->getResultArray();
-        $getCost = $pembayaranModel->getPembayaranCost(session()->get('penyewa')['id'], false);
+        $pembayaranBelumBayarList = $pembayaranModel->getUnpaidPembayaran(session()->get('user')['id'])->get()->getResultArray();
+        $getCost = $pembayaranModel->getPembayaranCost(session()->get('user')['id'], false);
         // var_dump($getCost);
 
 
@@ -131,8 +128,8 @@ class PenyewaController extends BaseController
     {
         $pembayaranModel = new Pembayaran();
 
-        $pembayaranSudahBayarList = $pembayaranModel->getPaidPembayaran(session()->get('penyewa')['id'])->get()->getResultArray();
-        $getCost = $pembayaranModel->getPembayaranCost(session()->get('penyewa')['id'], true);
+        $pembayaranSudahBayarList = $pembayaranModel->getPaidPembayaran(session()->get('user')['id'])->get()->getResultArray();
+        $getCost = $pembayaranModel->getPembayaranCost(session()->get('user')['id'], true);
 
         $data = [
             'cardReload' => '',
@@ -152,7 +149,7 @@ class PenyewaController extends BaseController
         $pembayaranModel = new Pembayaran();
 
         $PenyewaModel = new Penyewa();
-        $penyewa = $PenyewaModel->find(session()->get('penyewa')['id']);
+        $penyewa = $PenyewaModel->find(session()->get('user')['id']);
 
         if ($this->request->getPost('action') == 'export') {
             $idPembayarans = $this->request->getPost('idPembayarans1');
@@ -199,10 +196,17 @@ class PenyewaController extends BaseController
 
                 foreach ($idPembayarans as $idPembayaran) {
                     $pembayaran = $pembayaranModel->find($idPembayaran);
-                    $pembayaran['bukti_pembayaran'] = $newName;
+                    if ($this->request->getPost('payment_method') == 0) { //Non DP
+                        $pembayaran['status_lunas'] = 1;
+                        $pembayaran['pakai_dp'] = $this->request->getPost('payment_method');
+                        $pembayaran['bukti_pembayaran'] = $newName;
+                    }
+                    if ($this->request->getPost('payment_method') == 1) { //DP
+                        $pembayaran['pakai_dp'] = $this->request->getPost('payment_method');
+                        $pembayaran['bukti_pembayaran_dp'] = $newName;
+                    }
                     $pembayaran['tanggal_pembayaran'] = $tanggalPembayaran;
-                    $pembayaran['sudah_bayar'] = 2;
-
+                    $pembayaran['status_pembayaran'] = 2;
                     $pembayaranModel->save($pembayaran);
                 }
                 return redirect()->back()->with('success', 'success');
@@ -243,6 +247,27 @@ class PenyewaController extends BaseController
         }
 
         return redirect()->back();
+    }
+
+    public function updatePelunasan()
+    {
+        $idPembayaran = $this->request->getPost('orderId');
+        $pembayaranModel = new Pembayaran();
+        $pembayaran = $pembayaranModel->find($idPembayaran);
+
+        $filebuktiPembayaran = $this->request->getFile('bukti');
+        $newName = md5(uniqid(rand(), true)) . '.' . $filebuktiPembayaran->getExtension();
+        // Move the file to the uploads directory with the new name
+        $filebuktiPembayaran->move(WRITEPATH . 'uploads', $newName);
+
+        $tanggalPembayaran = $this->request->getPost('tanggalPembayaran');
+
+        $pembayaran['status_lunas'] = 1;
+        $pembayaran['bukti_pembayaran'] = $newName;
+        $pembayaran['tanggal_pembayaran'] = $tanggalPembayaran;
+        $pembayaranModel->save($pembayaran);
+
+        return redirect()->back()->with('success', 'success');
     }
 
     public function editPenyewaView()

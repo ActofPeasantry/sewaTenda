@@ -31,6 +31,21 @@ class CreateUsersTable extends Migration
             'password'   => [
                 'type'       => 'TEXT',
             ],
+            'nik'   => [
+                'type'       => 'VARCHAR',
+                'constraint' => '100',
+            ],
+            'nama'      => [
+                'type'       => 'VARCHAR',
+                'constraint' => '100',
+            ],
+            'alamat'   => [
+                'type'       => 'TEXT',
+            ],
+            'no_hp'      => [
+                'type'       => 'VARCHAR',
+                'constraint' => '14',
+            ],
             'is_deleted' => [
                 'type'       => 'BOOLEAN',
                 'default'    => false,
@@ -51,8 +66,7 @@ class CreateUsersTable extends Migration
     }
 
     public function down()
-    {
-        {
+    { {
             $this->forge->dropTable('users');
         }
     }

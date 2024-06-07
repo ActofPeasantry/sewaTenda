@@ -11,20 +11,21 @@ class LoginController extends BaseController
 {
     public function index()
     {
-        $data = ['cardReload' => '',
-        'headerTitle' => 'Login',
-        'cardAlignment' => 'text-center',
-        'breadcrumbLink' => '<a href="/catalog">Catalog</a>'
-       ];
-       
-       if(session()->get('user')){
-        if(session()->get('role')['kode'] == 'PNY'){
-            return redirect()->to('/catalog');
+        $data = [
+            'cardReload' => '',
+            'headerTitle' => 'Login',
+            'cardAlignment' => 'text-center',
+            'breadcrumbLink' => '<a href="/catalog">Catalog</a>'
+        ];
+
+        if (session()->get('user')) {
+            if (session()->get('role')['kode'] == 'PNY') {
+                return redirect()->to('/catalog');
+            }
+            return redirect()->to('/dashboard');
+        } else {
+            return view('login', $data);
         }
-        return redirect()->to('/dashboard');
-       }else{
-           return view('login', $data);
-       }
     }
 
     public function login()
@@ -34,20 +35,20 @@ class LoginController extends BaseController
 
         $roleModel = new Role();
         $userModel = new User();
-        $penyewaModel = new Penyewa();
+        // $penyewaModel = new Penyewa();
 
         $user = $userModel->where('email', $email)->first();
 
         if ($user && password_verify($password, $user['password'])) {
 
             $role = $roleModel->find($user['role_id']);
-            $penyewa = $penyewaModel->where('user_id', $user['id'])->first();
+            // $penyewa = $penyewaModel->where('user_id', $user['id'])->first();
             // User authenticated, store user info in session
             session()->set('user', $user);
             session()->set('role', $role);
-            session()->set('penyewa', $penyewa);
+            // session()->set('penyewa', $penyewa);
 
-            if($role['kode'] == 'PNY'){
+            if ($role['kode'] == 'PNY') {
                 return redirect()->to('/catalog');
             }
             return redirect()->to('/dashboard');

@@ -30,8 +30,12 @@
 										<th>No</th>
 										<th>Alamat Kirim</th>
 										<th>Tanggal Mulai Sewa</th>
+										<th>Tipe Pembayaran</th>
 										<th>Total Biaya</th>
-										<th>Status</th>
+										<th>Status Pembayaran</th>
+										<th>Status Lunas</th>
+										<th>Bukti Pembayaran</th>
+										<th>Bukti Pembayaran DP</th>
 										<th>Action</th>
 									</tr>
 								</thead>
@@ -39,16 +43,25 @@
 									<?php $i = 1 ?>
 									<?php foreach ($pembayaranSudahBayarList as $pembayaranSudahBayar) : ?>
 										<tr>
-											<td><input type="checkbox" value=<?= $pembayaranSudahBayar['id'] ?> name="idPembayarans1[]" <?= $pembayaranSudahBayar['sudah_bayar'] == 1 ? "" : "disabled" ?>></td>
+											<td><input type="checkbox" value=<?= $pembayaranSudahBayar['id'] ?> name="idPembayarans1[]" <?= $pembayaranSudahBayar['status_pembayaran'] == 1 ? "" : "disabled" ?>></td>
 											<td><?= $i ?></td>
 											<td><?= $pembayaranSudahBayar['alamat_kirim'] ?></td>
 											<td><?= $pembayaranSudahBayar['tanggal_mulai_sewa'] ?></td>
-											<td><?= $totalBiaya[$i - 1] ?></td>
-											<?php if ($pembayaranSudahBayar['sudah_bayar'] == 1) : ?>
+											<?php if ($pembayaranSudahBayar['pakai_dp'] == 0) : ?>
+												<td>
+													<p>Tidak DP</p>
+												</td>
+											<?php else : ?>
+												<td>
+													<p>Dp</p>
+												</td>
+											<?php endif; ?>
+											<td> IDR <?= number_format($totalBiaya[$i - 1], 2, '.', ','); ?> </td>
+											<?php if ($pembayaranSudahBayar['status_pembayaran'] == 1) : ?>
 												<td>
 													<p><code class="highlighter-rouge success">Selesai</code></p>
 												</td>
-											<?php elseif ($pembayaranSudahBayar['sudah_bayar'] == 2) : ?>
+											<?php elseif ($pembayaranSudahBayar['status_pembayaran'] == 2) : ?>
 												<td>
 													<p><code class="highlighter-rouge warning">Sedang Proses</code></p>
 												</td>
@@ -57,11 +70,42 @@
 													<p><code class="highlighter-rouge danger">Dibatalkan</code></p>
 												</td>
 											<?php endif; ?>
+											<?php if ($pembayaranSudahBayar['status_lunas'] == 0) : ?>
+												<td>
+													<p><code class="highlighter-rouge danger">Belum Lunas</code></p>
+												</td>
+											<?php else : ?>
+												<td>
+													<p><code class="highlighter-rouge success">Lunas</code></p>
+												</td>
+											<?php endif; ?>
+
 											<td>
-												<a class="btn btn-sm btn-success" href="<?= site_url('download/' . $pembayaranSudahBayar['bukti_pembayaran']) ?>" download>Unduh Bukti Pembayaran</a>
+												<?php if (isset($pembayaranSudahBayar['bukti_pembayaran'])) : ?>
+													<a href="<?= site_url('download/' . $pembayaranSudahBayar['bukti_pembayaran']) ?>" download>
+														<img src=<?= site_url('download/' . $pembayaranSudahBayar['bukti_pembayaran']) ?> alt="Gambar Tenda" style="max-width: 200px; height: auto;">
+													</a>
+												<?php endif; ?>
+											</td>
+
+											<td>
+												<?php if (isset($pembayaranSudahBayar['bukti_pembayaran_dp'])) : ?>
+													<a href="<?= site_url('download/' . $pembayaranSudahBayar['bukti_pembayaran_dp']) ?>" download>
+														<img src=<?= site_url('download/' . $pembayaranSudahBayar['bukti_pembayaran_dp']) ?> alt="Gambar Tenda" style="max-width: 200px; height: auto;">
+													</a>
+												<?php endif; ?>
+											</td>
+
+											<td>
 												<button type="button" class="btn btn-sm btn-info show-button" data-toggle="modal" data-target="#modal-pesanan" data-id="<?= $pembayaranSudahBayar['id'] ?>">
 													<i class="ft-edit"></i> Detail</a>
 												</button>
+
+												<?php if ($pembayaranSudahBayar['status_lunas'] == 0) : ?>
+													<button type="button" class="btn btn-sm btn-success pay-button" data-toggle="modal" data-target="#modal-lunas" data-id="<?= $pembayaranSudahBayar['id'] ?>">
+														<i class="ft-edit"></i> Lunaskan Pesanan
+													</button>
+												<?php endif; ?>
 											</td>
 										</tr>
 										<?php $i++ ?>
@@ -110,32 +154,84 @@
 		</div>
 	</div>
 </div>
+
+<!-- Pelunasan Modal -->
+<div id="modal-lunas" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+	<div class="modal-dialog  modal-dialog-centered modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Pelunasan Pesanan</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<form action="<?= site_url('update-pelunasan') ?>" method="post" enctype="multipart/form-data">
+				<input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" />
+				<input type="hidden" name="action" value="update" />
+				<div class="modal-body">
+					<input type="hidden" id="orderId" name="orderId" value="">
+
+					<div class="form-group mb-1">
+						<label class="form-label" for="tanggalPembayaran">Tanggal Pembayaran</label>
+						<input type="date" class="form-control mr-sm-2" name="tanggalPembayaran" id="tanggalPembayaran" required>
+					</div>
+					<div class="form-group mb-1">
+						<label class="form-label" for="bukti">Bukti Pembayaran</label>
+						<input type="file" class="form-control mr-sm-2" name="bukti" accept="image/jpeg, image/png, image/gif" id="bukti" required>
+					</div>
+				</div>
+
+
+				<div class="modal-footer">
+					<div class="col-auto my-1">
+						<button type="submit" class="btn btn-primary" name="submit1">Submit Pembayaran</button>
+					</div>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
 <?= $this->endSection() ?>
 
 <?= $this->section('js') ?>
 <script>
 	let table1 = new DataTable('#myTable1', {
 		"columns": [{
+				"width": "2%"
+			},
+			{
+				"width": "2%"
+			},
+			{
+				"width": "5%"
+			},
+			{
+				"width": "5%"
+			},
+			{
+				"width": "5%"
+			},
+			{
+				"width": "5%"
+			},
+			{
+				"width": "5%"
+			},
+			{
+				"width": "5%"
+			},
+			{
 				"width": "5%"
 			},
 			{
 				"width": "10%"
 			},
 			{
-				"width": "5%"
+				"width": "15%"
 			},
-			{
-				"width": "5%"
-			},
-			{
-				"width": "10%"
-			},
-			{
-				"width": "10%"
-			},
-			{
-				"width": "10%"
-			},
+
 		]
 	});
 
@@ -158,7 +254,7 @@
 				url: '/pesanan/detail/' + id,
 				dataType: 'json',
 				success: function(response) {
-					console.log(response);
+					// console.log(response);
 					if (response && response.length > 0) {
 						$('.detail-table tbody').empty();
 
@@ -175,7 +271,7 @@
 							);
 						});
 					} else {
-						console.log(id);
+						// console.log(id);
 						$('.detail-table tbody').html('<tr><td colspan="3">No data available</td></tr>');
 					}
 				},
@@ -183,6 +279,15 @@
 					console.error('Error fetching data:', error);
 				}
 			});
+		});
+	});
+</script>
+
+<script>
+	$(document).ready(function() {
+		$('.pay-button').on('click', function() {
+			var orderId = $(this).data('id');
+			$('#orderId').val(orderId);
 		});
 	});
 </script>

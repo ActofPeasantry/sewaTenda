@@ -27,27 +27,49 @@
 				<td style="width: 10px; height: 21.4727px; text-align: center; background-color: #6A0606; border: 1px solid black; border-collapse: collapse;"><strong style="color : white">No</strong></td>
 				<td style="width: 35px; font-size: 12px; height: 21.4727px; text-align: center; background-color: #6A0606; border: 1px solid black; border-collapse: collapse;"><strong style="color : white">Penyewa</strong></td>
 				<td style="width: 25px; font-size: 12px; height: 21.4727px; text-align: center; background-color: #6A0606; border: 1px solid black; border-collapse: collapse;"><strong style="color : white">Item</strong></td>
+				<td style="width: 25px; font-size: 12px; height: 21.4727px; text-align: center; background-color: #6A0606; border: 1px solid black; border-collapse: collapse;"><strong style="color : white">Tipe Pembayaran</strong></td>
+				<td style="width: 25px; font-size: 12px; height: 21.4727px; text-align: center; background-color: #6A0606; border: 1px solid black; border-collapse: collapse;"><strong style="color : white">Status pelunasan</strong></td>
 				<td style="width: 25px; font-size: 12px; height: 21.4727px; text-align: center; background-color: #6A0606; border: 1px solid black; border-collapse: collapse;"><strong style="color : white">Harga</strong></td>
 				<td style="width: 10px; font-size: 12px; height: 21.4727px; text-align: center; background-color: #6A0606; border: 1px solid black; border-collapse: collapse;"><strong style="color : white">Jumlah</strong></td>
+				<td style="width: 10px; font-size: 12px; height: 21.4727px; text-align: center; background-color: #6A0606; border: 1px solid black; border-collapse: collapse;"><strong style="color : white">Lama Sewa</strong></td>
+				<td style="width: 10px; font-size: 12px; height: 21.4727px; text-align: center; background-color: #6A0606; border: 1px solid black; border-collapse: collapse;"><strong style="color : white">Tanggal <br> Mulai Sewa</strong></td>
 				<td style="width: 10px; font-size: 12px; height: 21.4727px; text-align: center; background-color: #6A0606; border: 1px solid black; border-collapse: collapse;"><strong style="color : white">Tanggal <br> Pembayaran</strong></td>
 				<td style="width: 35px; font-size: 12px; height: 21.4727px; text-align: center; background-color: #6A0606; border: 1px solid black; border-collapse: collapse;"><strong style="color : white">Alamat Kirim</strong></td>
 				<td style="width: 25px; font-size: 12px; height: 21.4727px; text-align: center; background-color: #6A0606; border: 1px solid black; border-collapse: collapse;"><strong style="color : white">TOTAL</strong></td>
 			</tr>
-			<?php $i = 1 ?>
+			<?php $i = 1;
+			$x = 1 ?>
 			<?php foreach ($pembayaranList as $pembayaran) : ?>
 				<tr style="height: 21px;">
 					<td style="width: 25px; font-size: 12px; height: 21px; text-align: center; border: 1px solid black; border-collapse: collapse;"><?= $i ?></td>
 					<td style="width: 35px; font-size: 12px; height: 21px; text-align: center; border: 1px solid black; border-collapse: collapse;"><?= $pembayaran['nama_penyewa'] ?></td>
 					<td style="height: 21px; text-align: center; border: 1px solid black; border-collapse: collapse; width: 25px; font-size: 12px;"><?= $pembayaran['nama_tenda'] ?></td>
+
+					<?php if ($pembayaran['pakai_dp'] == 0) : ?>
+						<td style="height: 21px; text-align: center; border: 1px solid black; border-collapse: collapse; width: 25px; font-size: 12px;">DP</td>
+					<?php else : ?>
+						<td style="height: 21px; text-align: center; border: 1px solid black; border-collapse: collapse; width: 25px; font-size: 12px;"> Tidak DP </td>
+					<?php endif ?>
+
+					<?php if ($pembayaran['status_lunas'] == 0) : ?>
+						<td style="height: 21px; text-align: center; border: 1px solid black; border-collapse: collapse; width: 25px; font-size: 12px;">Belum Lunas</td>
+					<?php else : ?>
+						<td style="height: 21px; text-align: center; border: 1px solid black; border-collapse: collapse; width: 25px; font-size: 12px;"> Lunas </td>
+					<?php endif ?>
+
+
 					<td style="height: 21px; text-align: center; border: 1px solid black; border-collapse: collapse; width: 25px; font-size: 12px;">IDR <?= number_format($pembayaran['harga_tenda'], 2, '.', ','); ?></td>
 					<td style="height: 21px; text-align: center; border: 1px solid black; border-collapse: collapse; width: 10px; font-size: 12px;"><?= $pembayaran['jumlah_tenda'] ?></td>
+					<td style="height: 21px; text-align: center; border: 1px solid black; border-collapse: collapse; width: 10px; font-size: 12px;"><?= $pembayaran['lama_sewa'] ?></td>
 					<?php if (isset($pembayaran['rowspan'])) : ?>
+						<td rowspan=<?= $pembayaran['rowspan'] ?> style="height: 21px; text-align: center; border: 1px solid black; border-collapse: collapse; width: 10px; font-size: 12px;"><?= $pembayaran['tanggal_mulai_sewa'] ?></td>
 						<td rowspan=<?= $pembayaran['rowspan'] ?> style="height: 21px; text-align: center; border: 1px solid black; border-collapse: collapse; width: 10px; font-size: 12px;"><?= $pembayaran['tanggal_pembayaran'] ?></td>
 						<td rowspan=<?= $pembayaran['rowspan'] ?> style="height: 21px; text-align: center; border: 1px solid black; border-collapse: collapse; width: 35px; font-size: 12px;"><?= $pembayaran['alamat_kirim'] ?></td>
-						<td rowspan=<?= $pembayaran['rowspan'] ?> style="width: 25px; font-size: 12px; height: 21px; text-align: center; border: 1px solid black; border-collapse: collapse;">IDR <?= number_format($pembayaran['harga_tenda'] * $pembayaran['jumlah_tenda'], 2, '.', ','); ?></td>
+						<td rowspan=<?= $pembayaran['rowspan'] ?> style="width: 25px; font-size: 12px; height: 21px; text-align: center; border: 1px solid black; border-collapse: collapse;">IDR <?= number_format($totalTransCost[$x - 1], 2, '.', ','); ?></td>
 					<?php endif; ?>
 				</tr>
 				<?php $i++ ?>
+				<?php $x <= count($totalTransCost) ? $x++ : null ?>
 			<?php endforeach; ?>
 		</tbody>
 	</table>

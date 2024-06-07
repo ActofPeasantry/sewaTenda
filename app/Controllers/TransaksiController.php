@@ -140,7 +140,7 @@ class TransaksiController extends BaseController
             foreach ($idPembayarans as $idPembayaran) {
                 $pembayaran = $pembayaranModel->find($idPembayaran);
                 $pembayaran['catatan'] = $this->request->getPost('catatan');
-                $pembayaran['sudah_bayar'] = $this->request->getPost('sudahBayar');
+                $pembayaran['status_pembayaran'] = $this->request->getPost('sudahBayar');
 
                 $pembayaranModel->save($pembayaran);
             }
@@ -158,45 +158,65 @@ class TransaksiController extends BaseController
         $formattedDate = $currentDateTime->format('l, d F Y');
 
         $pembayaranModel = new Pembayaran();
-
         $pembayaranList = $pembayaranModel->getPembayaranByStatus($id)->get()->getResultArray();
 
-        $indexSama = 0;
-        $jmlSama = 0;
+        $targetIndex = 0;
+        $totalRowSpan = 0;
+        $totalTransCost = [];
+        $getTransCost = 0;
         foreach ($pembayaranList as $index => &$pembayaran) {
             $nextIndex = $index + 1;
-            // Create a Time object from the date value
-            $time = new Time($pembayaran['tanggal_pembayaran']);
 
+            // Create a Time object from the date value
+            $tgl_pembayaran = new Time($pembayaran['tanggal_pembayaran']);
+            $tgl_sewa = new Time($pembayaran['tanggal_mulai_sewa']);
             // Format the Time object to remove hours, minutes, and seconds
-            $pembayaran['tanggal_pembayaran'] = $time->format('Y-m-d');
+            $pembayaran['tanggal_pembayaran'] = $tgl_pembayaran->format('d-m-Y');
+            $pembayaran['tanggal_mulai_sewa'] = $tgl_sewa->format('d-m-Y');
+
             if (count($pembayaranList) > 1) {
                 if ($nextIndex < count($pembayaranList)) {
-                    if ($pembayaran['bukti_pembayaran'] == $pembayaranList[$nextIndex]['bukti_pembayaran']) {
-                        $jmlSama++;
+                    //if current data related to the next data
+                    if ($pembayaran['pembayaran_id'] == $pembayaranList[$nextIndex]['pembayaran_id']) {
+                        $totalRowSpan++;
+                        $getTransCost += $pembayaran['lama_sewa'] * $pembayaran['jumlah_tenda'] * $pembayaran['harga_tenda'];
                     } else {
-                        $jmlSama++;
-                        $pembayaranList[$indexSama]['rowspan'] = $jmlSama;
-                        $jmlSama = 0;
-                        $indexSama = $nextIndex;
+                        $totalRowSpan++;
+                        $pembayaranList[$targetIndex]['rowspan'] = $totalRowSpan;
+
+                        $getTransCost += $pembayaran['lama_sewa'] * $pembayaran['jumlah_tenda'] * $pembayaran['harga_tenda'];
+                        array_push($totalTransCost, $getTransCost);
+
+                        $getTransCost = 0;
+                        $totalRowSpan = 0;
+
+                        $targetIndex = $nextIndex;
                     }
                 }
+                // check if its the last data
                 if ($index == (count($pembayaranList)) - 1) {
-                    if ($pembayaran['bukti_pembayaran'] != $pembayaranList[$index - 1]['bukti_pembayaran']) {
+                    if ($pembayaran['pembayaran_id'] != $pembayaranList[$index - 1]['pembayaran_id']) {
                         $pembayaran['rowspan'] = 1;
                     } else {
-                        $jmlSama++;
-                        $pembayaranList[$indexSama]['rowspan'] = $jmlSama;
+                        $totalRowSpan++;
+                        $pembayaranList[$targetIndex]['rowspan'] = $totalRowSpan;
                     }
+                    $getTransCost += $pembayaran['lama_sewa'] * $pembayaran['jumlah_tenda'] * $pembayaran['harga_tenda'];
+                    array_push($totalTransCost, $getTransCost);
+                    $getTransCost = 0;
                 }
             } else {
-                $pembayaran['rowspan'] = $jmlSama;
+                $pembayaran['rowspan'] = $totalRowSpan;
+                $getTransCost += $pembayaran['lama_sewa'] * $pembayaran['jumlah_tenda'] * $pembayaran['harga_tenda'];
+                array_push($totalTransCost, $getTransCost);
+                $getTransCost = 0;
             }
         }
 
         $data = [
             'pembayaranList' => $pembayaranList,
-            'tanggal' => $formattedDate
+            'tanggal' => $formattedDate,
+            'totalTransCost' => $totalTransCost
         ];
 
         $options = new Options();
