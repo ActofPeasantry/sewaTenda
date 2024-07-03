@@ -53,7 +53,7 @@ class Pembayaran extends Model
                 'pembayarans.user_id' => $penyewaId,
                 'pembayarans.tanggal_pembayaran' => NULL,
                 'pembayarans.bukti_pembayaran' => NULL,
-                'pembayarans.status_pembayaran' => 0,
+                'pembayarans.status_pembayaran' => 3,
             ])
             ->orderBy('pembayarans.id', 'asc');
         return $this;

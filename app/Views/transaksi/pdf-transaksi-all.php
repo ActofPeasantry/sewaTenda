@@ -69,7 +69,7 @@
 					<?php endif; ?>
 				</tr>
 				<?php $i++ ?>
-				<?php $x <= count($totalTransCost) ? $x++ : null ?>
+				<?php $x < count($totalTransCost) ? $x++ : null ?>
 			<?php endforeach; ?>
 		</tbody>
 	</table>

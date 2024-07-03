@@ -41,7 +41,7 @@ class PenyewaController extends BaseController
         $data = [
             'cardReload' => '',
             'headerTitle' => 'Rama Tenda : Catalog',
-            'breadcrumbLink' => session()->get('user') ? '<a href="/cart">Cart</a> - <a href="/pesanan">Pesanan</a> - <a href="/prosespesanan">Proses Pesanan</a>' : '<a href="/login">Login</a>',
+            'breadcrumbLink' => session()->get('user') ? '<a href="/cart">Cart</a> - <a href="/pesanan">Pembayaran</a> - <a href="/prosespesanan">Menu Pembayaran</a>' : '<a href="/login">Login</a>',
             'tendaList' => $tendaList->paginate(6, 'tenda'),
             'pager' => $tendaList->pager,
             'nomor' => nomor($this->request->getVar('page_tenda'), 6),
@@ -54,7 +54,7 @@ class PenyewaController extends BaseController
         $data = [
             'cardReload' => '',
             'headerTitle' => 'Cart',
-            'breadcrumbLink' => '<a href="/catalog">Catalog</a> - <a href="/pesanan">Pesanan</a> - <a href="/cart">Proses Pesanan</a>',
+            'breadcrumbLink' => '<a href="/catalog">Catalog</a> - <a href="/pesanan">Pembayaran</a> - <a href="/cart">Menu Pembayaran</a>',
         ];
         return view('penyewa/cart', $data);
     }
@@ -70,6 +70,7 @@ class PenyewaController extends BaseController
             'alamat_kirim' => $alamat,
             'tanggal_mulai_sewa' => $tanggalMulaiSewa,
             'user_id' => session()->get('user')['id'],
+            'status_pembayaran' => 3, //unpaid status number
         ];
         $pembayaranModel->insert($pembayaranData);
         $pembayaranId = $pembayaranModel->insertID();
@@ -109,7 +110,7 @@ class PenyewaController extends BaseController
             'cardReload' => '',
             'headerTitle' => 'Pesanan',
             'cardAlignment' => 'text-center',
-            'breadcrumbLink' => '<a href="/catalog">Catalog</a> - <a href="/prosespesanan">Proses Pesanan</a> - <a href="/cart">Cart</a>',
+            'breadcrumbLink' => '<a href="/catalog">Catalog</a> - <a href="/prosespesanan">Menu Pembayaran</a> - <a href="/cart">Cart</a>',
             'pembayaranBelumBayarList' => $pembayaranBelumBayarList,
             'totalBiaya' => $getCost
         ];
@@ -135,7 +136,7 @@ class PenyewaController extends BaseController
             'cardReload' => '',
             'headerTitle' => 'Pesanan',
             'cardAlignment' => 'text-center',
-            'breadcrumbLink' => '<a href="/catalog">Catalog</a> - <a href="/pesanan">Pesanan</a> - <a href="/cart">Cart</a>',
+            'breadcrumbLink' => '<a href="/catalog">Catalog</a> - <a href="/pesanan">Pembayaran</a> - <a href="/cart">Cart</a>',
             'pembayaranSudahBayarList' => $pembayaranSudahBayarList,
             'totalBiaya' => $getCost
         ];

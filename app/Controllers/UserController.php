@@ -74,15 +74,15 @@ class UserController extends BaseController
             'username' => $this->request->getPost('username'),
             'email' => $this->request->getPost('email'),
             'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-            'is_delete' => 0
-        ];
-        $penyewaRequest = [
             'nik' => $this->request->getPost('nik'),
             'nama' => $this->request->getPost('nama'),
             'alamat' => $this->request->getPost('alamat'),
             'no_hp' => $this->request->getPost('noHp'),
             'is_delete' => 0
         ];
+        // $penyewaRequest = [
+        //     'is_delete' => 0
+        // ];
 
         if ($this->request->getPost('action') == 'add') {
 
@@ -98,26 +98,26 @@ class UserController extends BaseController
             }
 
             $userModel->insert($userRequest);
-            $penyewaRequest['user_id'] =  $userModel->insertID();
-            $penyewaModel->insert($penyewaRequest);
+            // $penyewaRequest['user_id'] =  $userModel->insertID();
+            // $penyewaModel->insert($penyewaRequest);
         }
 
         if ($this->request->getPost('action') == 'edit') {
 
             $penyewa = $penyewaModel->where('nik', $this->request->getPost('nik'))->first();
 
-            if ($penyewa && $penyewa['id'] != (int)$this->request->getPost('penyewaId')) {
-                return redirect()->back()->with('error', 'NIK Sudah Ada');
-            }
+            // if ($penyewa && $penyewa['id'] != (int)$this->request->getPost('penyewaId')) {
+            //     return redirect()->back()->with('error', 'NIK Sudah Ada');
+            // }
 
-            $user = $userModel->where('email', $this->request->getPost('email'))->first();
+            // $user = $userModel->where('email', $this->request->getPost('email'))->first();
 
-            if ($user && $user['id'] != $this->request->getPost('id')) {
-                return redirect()->back()->with('error', 'Email Sudah Ada');
-            }
+            // if ($user && $user['id'] != $this->request->getPost('id')) {
+            //     return redirect()->back()->with('error', 'Email Sudah Ada');
+            // }
 
             $userModel->update((int)$this->request->getPost('userId'), $userRequest);
-            $penyewaModel->update((int)$this->request->getPost('penyewaId'), $penyewaRequest);
+            // $penyewaModel->update((int)$this->request->getPost('penyewaId'), $penyewaRequest);
         }
 
 

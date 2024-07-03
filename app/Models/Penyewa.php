@@ -116,7 +116,8 @@ class Penyewa extends Model
 
         // Add the additional select for jumlah_pesanan
         $this->select('(SELECT COUNT(*) FROM pembayarans WHERE pembayarans.status_pembayaran = 0) AS jumlah_pesanan')
-            ->where('users.id IN (SELECT pembayarans.user_id FROM pembayarans WHERE pembayarans.status_pembayaran = 2 GROUP BY pembayarans.user_id)');
+            ->where('users.id IN (SELECT pembayarans.user_id FROM pembayarans WHERE pembayarans.status_pembayaran = 0 GROUP BY pembayarans.user_id)');
+
 
         return $this;
     }
