@@ -120,11 +120,11 @@
 				<table class="table table-striped table-borderless table-hover detail-table">
 					<thead>
 						<tr>
-							<th>Nama Tenda</th>
+							<th>Nama Item</th>
 							<th>Jumlah Pesanan</th>
-							<th>Ukuran Tenda</th>
+							<th>Ukuran Item</th>
 							<th>Lama Sewa</th>
-							<th>Harga Tenda</th>
+							<th>Harga Item</th>
 							<th>Harga Total</th>
 						</tr>
 					</thead>

@@ -69,12 +69,12 @@ class CreatePembayaransTable extends Migration
         ]);
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('user_id', 'users', 'id');
-        $this->forge->createTable('pembayarans');
+        $this->forge->createTable('transactions');
     }
 
     public function down()
     { {
-            $this->forge->dropTable('pembayarans');
+            $this->forge->dropTable('transactions');
         }
     }
 }

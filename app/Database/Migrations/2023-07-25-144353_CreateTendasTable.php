@@ -62,13 +62,12 @@ class CreateTendasTable extends Migration
         ]);
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('kategori_id', 'kategoris', 'id');
-        $this->forge->createTable('tendas');
+        $this->forge->createTable('items');
     }
 
     public function down()
-    {
-        {
-            $this->forge->dropTable('tendas');
+    { {
+            $this->forge->dropTable('items');
         }
     }
 }

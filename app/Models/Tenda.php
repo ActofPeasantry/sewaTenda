@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class Tenda extends Model
 {
     protected $DBGroup          = 'default';
-    protected $table            = 'tendas';
+    protected $table            = 'items';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
@@ -41,17 +41,17 @@ class Tenda extends Model
 
     public function getTendasWithKategoris()
     {
-        // Select the columns from 'tendas' and alias the 'name' column from 'kategoris' as 'kategori_name'
-        $this->select('tendas.*, kategoris.nama AS nama_kategori, kategoris.kode AS kode_kategori');
+        // Select the columns from 'items' and alias the 'name' column from 'kategoris' as 'kategori_name'
+        $this->select('items.*, kategoris.nama AS nama_kategori, kategoris.kode AS kode_kategori');
 
         // Perform the join with the 'kategoris' table
-        $this->join('kategoris', 'tendas.kategori_id = kategoris.id');
+        $this->join('kategoris', 'items.kategori_id = kategoris.id');
 
         // Filter the data where 'is_deleted' column is 0
-        $this->where('tendas.is_deleted', 0);
+        $this->where('items.is_deleted', 0);
 
-        // Order the data by 'tendas.id' in ascending order
-        $this->orderBy('tendas.id', 'asc');
+        // Order the data by 'items.id' in ascending order
+        $this->orderBy('items.id', 'asc');
 
         // Perform the query and return the result
         return $this;
@@ -63,6 +63,6 @@ class Tenda extends Model
     }
     public function detailPembayarans()
     {
-        return $this->belongsTo(detailPembayaran::class, 'tenda_id', 'id');
+        return $this->belongsTo(detailPembayaran::class, 'item_id', 'id');
     }
 }

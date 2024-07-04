@@ -79,8 +79,8 @@ class PenyewaController extends BaseController
         foreach ($tendaList as $tenda) {
             $detailPembayaranModel = new DetailPembayaran();
             $detailPembayaranData = [
-                'tenda_id' => $tenda['id'],
-                'pembayaran_id' => $pembayaranId, // Use the retrieved Pembayaran ID
+                'item_id' => $tenda['id'],
+                'transaction_id' => $pembayaranId, // Use the retrieved Pembayaran ID
                 'jumlah_tenda' => $tenda['newQuantity'],
                 'lama_sewa' => $tenda['jumlahHari'],
                 'is_deleted' => 0,

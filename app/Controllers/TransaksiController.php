@@ -177,7 +177,7 @@ class TransaksiController extends BaseController
             if (count($pembayaranList) > 1) {
                 if ($nextIndex < count($pembayaranList)) {
                     //if current data related to the next data
-                    if ($pembayaran['pembayaran_id'] == $pembayaranList[$nextIndex]['pembayaran_id']) {
+                    if ($pembayaran['transaction_id'] == $pembayaranList[$nextIndex]['transaction_id']) {
                         $totalRowSpan++;
                         $getTransCost += $pembayaran['lama_sewa'] * $pembayaran['jumlah_tenda'] * $pembayaran['harga_tenda'];
                     } else {
@@ -195,7 +195,7 @@ class TransaksiController extends BaseController
                 }
                 // check if its the last data
                 if ($index == (count($pembayaranList)) - 1) {
-                    if ($pembayaran['pembayaran_id'] != $pembayaranList[$index - 1]['pembayaran_id']) {
+                    if ($pembayaran['transaction_id'] != $pembayaranList[$index - 1]['transaction_id']) {
                         $pembayaran['rowspan'] = 1;
                     } else {
                         $totalRowSpan++;

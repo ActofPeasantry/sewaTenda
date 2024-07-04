@@ -8,15 +8,15 @@ class DetailPembayaran extends Model
 {
 
   protected $DBGroup = 'default';
-  protected $table = 'detail_pembayarans';
+  protected $table = 'transaction_details';
   protected $primaryKey = 'id';
   protected $useAutoIncrement = true;
   protected $returnType       = 'array';
   protected $useSoftDeletes   = true;
   protected $protectFields    = true;
   protected $allowedFields = [
-    'tenda_id',
-    'pembayaran_id',
+    'item_id',
+    'transaction_id',
     'jumlah_tenda',
     'lama_sewa',
     'is_deleted',
@@ -48,33 +48,33 @@ class DetailPembayaran extends Model
 
   // public function getPembayaranByPembayaranIdList($pembayaranIdList)
   // {
-  //   $this->select('detail_pembayarans.*, pembayarans.*, 
-  //       tendas.kode, tendas.nama, tendas.ukuran, tendas.harga, tendas.sisa, tendas.gambar, tendas.kategori_id')
-  //     ->join('pembayarans', 'detail_pembayarans.pembayaran_id = pembayarans.id')
-  //     ->join('tendas', 'detail_pembayarans.tenda_id = tendas.id')
-  //     ->where('pembayarans.is_deleted', 0)
-  //     ->whereIn('pembayarans.id', $pembayaranIdList)
-  //     ->orderBy('pembayarans.bukti_pembayaran', 'asc')
-  //     ->orderBy('pembayarans.id', 'asc');
+  //   $this->select('transaction_details.*, transactions.*, 
+  //       items.kode, items.nama, items.ukuran, items.harga, items.sisa, items.gambar, items.kategori_id')
+  //     ->join('transactions', 'transaction_details.transaction_id = transactions.id')
+  //     ->join('items', 'transaction_details.item_id = items.id')
+  //     ->where('transactions.is_deleted', 0)
+  //     ->whereIn('transactions.id', $pembayaranIdList)
+  //     ->orderBy('transactions.bukti_pembayaran', 'asc')
+  //     ->orderBy('transactions.id', 'asc');
 
   //   return $this;
   // }
 
   public function getDetailByPembayaranId($pembayaranId)
   {
-    $this->select('detail_pembayarans.*, tendas.nama, tendas.ukuran, tendas.harga, tendas.kategori_id')
-      ->join('tendas', 'detail_pembayarans.tenda_id = tendas.id')
-      ->where('pembayaran_id', $pembayaranId);
+    $this->select('transaction_details.*, items.nama, items.ukuran, items.harga, items.kategori_id')
+      ->join('items', 'transaction_details.item_id = items.id')
+      ->where('transaction_id', $pembayaranId);
     return $this;
   }
 
-  public function pembayarans()
+  public function transactions()
   {
-    return $this->belongsTo(Pembayaran::class, 'pembayaran_id', 'id');
+    return $this->belongsTo(Pembayaran::class, 'transaction_id', 'id');
   }
 
-  public function tendas()
+  public function items()
   {
-    return $this->hasMany(Tenda::class, 'tenda_id', 'id');
+    return $this->hasMany(Tenda::class, 'item_id', 'id');
   }
 }

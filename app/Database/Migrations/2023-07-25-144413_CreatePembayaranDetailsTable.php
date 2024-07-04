@@ -15,12 +15,12 @@ class CreatePembayaranDetailsTable extends Migration
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
-            'tenda_id' => [
+            'item_id' => [
                 'type' => 'INT',
                 'constraint' => 5,
                 'unsigned' => true,
             ],
-            'pembayaran_id' => [
+            'transaction_id' => [
                 'type' => 'INT',
                 'constraint' => 5,
                 'unsigned' => true,
@@ -48,9 +48,9 @@ class CreatePembayaranDetailsTable extends Migration
             'deleted_at' => ['type' => 'datetime', 'null' => true],
         ]);
         $this->forge->addPrimaryKey('id');
-        $this->forge->addForeignKey('pembayaran_id', 'pembayarans', 'id');
-        $this->forge->addForeignKey('tenda_id', 'tendas', 'id');
-        $this->forge->createTable('detail_pembayarans');
+        $this->forge->addForeignKey('transaction_id', 'transactions', 'id');
+        $this->forge->addForeignKey('item_id', 'items', 'id');
+        $this->forge->createTable('transaction_details');
     }
 
     public function down()

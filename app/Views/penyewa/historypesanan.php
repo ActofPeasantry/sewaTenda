@@ -83,7 +83,7 @@
 											<td>
 												<?php if (isset($pembayaranSudahBayar['bukti_pembayaran'])) : ?>
 													<a href="<?= site_url('download/' . $pembayaranSudahBayar['bukti_pembayaran']) ?>" download>
-														<img src=<?= site_url('download/' . $pembayaranSudahBayar['bukti_pembayaran']) ?> alt="Gambar Tenda" style="max-width: 200px; height: auto;">
+														<img src=<?= site_url('download/' . $pembayaranSudahBayar['bukti_pembayaran']) ?> alt="Gambar Item" style="max-width: 200px; height: auto;">
 													</a>
 												<?php endif; ?>
 											</td>
@@ -91,7 +91,7 @@
 											<td>
 												<?php if (isset($pembayaranSudahBayar['bukti_pembayaran_dp'])) : ?>
 													<a href="<?= site_url('download/' . $pembayaranSudahBayar['bukti_pembayaran_dp']) ?>" download>
-														<img src=<?= site_url('download/' . $pembayaranSudahBayar['bukti_pembayaran_dp']) ?> alt="Gambar Tenda" style="max-width: 200px; height: auto;">
+														<img src=<?= site_url('download/' . $pembayaranSudahBayar['bukti_pembayaran_dp']) ?> alt="Gambar Item" style="max-width: 200px; height: auto;">
 													</a>
 												<?php endif; ?>
 											</td>
@@ -133,11 +133,11 @@
 				<table class="table table-striped table-borderless table-hover detail-table">
 					<thead>
 						<tr>
-							<th>Nama Tenda</th>
+							<th>Nama Item</th>
 							<th>Jumlah Pesanan</th>
-							<th>Ukuran Tenda</th>
+							<th>Ukuran Item</th>
 							<th>Lama Sewa</th>
-							<th>Harga Tenda</th>
+							<th>Harga Item</th>
 							<th>Harga Total</th>
 						</tr>
 					</thead>

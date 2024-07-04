@@ -51,9 +51,9 @@ class Penyewa extends Model
 
     // public function getPenyewaJumlahPembayaranProgress()
     // {
-    //     $this->select('penyewas.*, (SELECT COUNT(*) FROM pembayarans WHERE pembayarans.sudah_bayar = 2) AS jumlah_pesanan')
+    //     $this->select('penyewas.*, (SELECT COUNT(*) FROM transactions WHERE transactions.sudah_bayar = 2) AS jumlah_pesanan')
     //         ->where('penyewas.is_deleted', 0)
-    //         ->where('penyewas.id IN (SELECT pembayarans.penyewa_id FROM pembayarans WHERE pembayarans.sudah_bayar = 2 GROUP BY pembayarans.penyewa_id)')
+    //         ->where('penyewas.id IN (SELECT transactions.penyewa_id FROM transactions WHERE transactions.sudah_bayar = 2 GROUP BY transactions.penyewa_id)')
     //         ->orderBy('penyewas.id', 'asc');
 
     //     return $this;
@@ -65,19 +65,19 @@ class Penyewa extends Model
         $this->getPenyewa();
 
         // Add the additional select for jumlah_pesanan
-        $this->select('(SELECT COUNT(*) FROM pembayarans WHERE pembayarans.status_pembayaran = 2) AS jumlah_pesanan')
-            ->where('users.id IN (SELECT pembayarans.user_id FROM pembayarans WHERE pembayarans.status_pembayaran = 2 GROUP BY pembayarans.user_id)');
+        $this->select('(SELECT COUNT(*) FROM transactions WHERE transactions.status_pembayaran = 2) AS jumlah_pesanan')
+            ->where('users.id IN (SELECT transactions.user_id FROM transactions WHERE transactions.status_pembayaran = 2 GROUP BY transactions.user_id)');
 
         return $this;
     }
 
     // public function getPenyewaJumlahPembayaranApproved()
     // {
-    //     $this->select('penyewas.*, (SELECT COUNT(*) FROM pembayarans WHERE pembayarans.sudah_bayar = 1) AS jumlah_pesanan');
+    //     $this->select('penyewas.*, (SELECT COUNT(*) FROM transactions WHERE transactions.sudah_bayar = 1) AS jumlah_pesanan');
 
     //     $this->where('penyewas.is_deleted', 0);
 
-    //     $this->where('penyewas.id IN (SELECT pembayarans.penyewa_id FROM pembayarans WHERE pembayarans.sudah_bayar = 1 GROUP BY pembayarans.penyewa_id)');
+    //     $this->where('penyewas.id IN (SELECT transactions.penyewa_id FROM transactions WHERE transactions.sudah_bayar = 1 GROUP BY transactions.penyewa_id)');
 
     //     $this->orderBy('penyewas.id', 'asc');
 
@@ -88,8 +88,8 @@ class Penyewa extends Model
     {
         $this->getPenyewa();
 
-        $this->select('(SELECT COUNT(*) FROM pembayarans WHERE pembayarans.status_pembayaran = 1) AS jumlah_pesanan')
-            ->where('users.id IN (SELECT pembayarans.user_id FROM pembayarans WHERE pembayarans.status_pembayaran = 1 GROUP BY pembayarans.user_id)');
+        $this->select('(SELECT COUNT(*) FROM transactions WHERE transactions.status_pembayaran = 1) AS jumlah_pesanan')
+            ->where('users.id IN (SELECT transactions.user_id FROM transactions WHERE transactions.status_pembayaran = 1 GROUP BY transactions.user_id)');
 
         return $this;
     }
@@ -98,11 +98,11 @@ class Penyewa extends Model
     // {
     //     $this->getPenyewa();
 
-    //     $this->select('penyewas.*, (SELECT COUNT(*) FROM pembayarans WHERE pembayarans.sudah_bayar = 0) AS jumlah_pesanan');
+    //     $this->select('penyewas.*, (SELECT COUNT(*) FROM transactions WHERE transactions.sudah_bayar = 0) AS jumlah_pesanan');
 
     //     $this->where('penyewas.is_deleted', 0);
 
-    //     $this->where('penyewas.id IN (SELECT pembayarans.user_id FROM pembayarans WHERE pembayarans.sudah_bayar = 0 GROUP BY pembayarans.user_id)');
+    //     $this->where('penyewas.id IN (SELECT transactions.user_id FROM transactions WHERE transactions.sudah_bayar = 0 GROUP BY transactions.user_id)');
 
     //     $this->orderBy('penyewas.id', 'asc');
 
@@ -115,14 +115,14 @@ class Penyewa extends Model
         $this->getPenyewa();
 
         // Add the additional select for jumlah_pesanan
-        $this->select('(SELECT COUNT(*) FROM pembayarans WHERE pembayarans.status_pembayaran = 0) AS jumlah_pesanan')
-            ->where('users.id IN (SELECT pembayarans.user_id FROM pembayarans WHERE pembayarans.status_pembayaran = 0 GROUP BY pembayarans.user_id)');
+        $this->select('(SELECT COUNT(*) FROM transactions WHERE transactions.status_pembayaran = 0) AS jumlah_pesanan')
+            ->where('users.id IN (SELECT transactions.user_id FROM transactions WHERE transactions.status_pembayaran = 0 GROUP BY transactions.user_id)');
 
 
         return $this;
     }
 
-    public function pembayarans()
+    public function transactions()
     {
         return $this->hasMany(Pembayaran::class, 'user_id', 'id');
     }

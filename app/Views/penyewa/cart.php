@@ -155,7 +155,7 @@
                     }
                 });
             } else {
-                alert("Hari Penyewaan Tenda Harus Lebih Dari 0");
+                alert("Hari Penyewaan Item Harus Lebih Dari 0");
             }
         } else {
             alert("Cart Kosong");

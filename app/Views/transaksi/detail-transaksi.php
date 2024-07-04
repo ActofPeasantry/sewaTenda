@@ -70,7 +70,7 @@
 											<td><?= $pembayaran['tanggal_mulai_sewa'] ?></td>
 											<td><?= $totalBiaya[$i - 1] ?></td>
 											<td><a href="<?= site_url('download/' . $pembayaran['bukti_pembayaran']) ?>" download>
-													<img src=<?= site_url('download/' . $pembayaran['bukti_pembayaran']) ?> alt="Gambar Tenda" style="max-width: 200px; height: auto;">
+													<img src=<?= site_url('download/' . $pembayaran['bukti_pembayaran']) ?> alt="Gambar Item" style="max-width: 200px; height: auto;">
 												</a>
 											</td>
 											<td>
@@ -105,11 +105,11 @@
 				<table class="table table-striped table-borderless table-hover detail-table">
 					<thead>
 						<tr>
-							<th>Nama Tenda</th>
+							<th>Nama Item</th>
 							<th>Jumlah Pesanan</th>
-							<th>Ukuran Tenda</th>
+							<th>Ukuran Item</th>
 							<th>Lama Sewa</th>
-							<th>Harga Tenda</th>
+							<th>Harga Item</th>
 							<th>Harga Total</th>
 						</tr>
 					</thead>
