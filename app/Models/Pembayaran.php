@@ -14,8 +14,7 @@ class Pembayaran extends Model
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'tanggal_pembayaran', 'is_deleted', 'jumlah_tenda',
-        'bukti_pembayaran', 'pakai_dp', 'bukti_pembayaran_dp',
+        'tanggal_pembayaran', 'is_deleted', 'jumlah_tenda', 'pakai_dp',
         'status_pembayaran', 'status_lunas', 'catatan',
         'alamat_kirim', 'tanggal_mulai_sewa', 'user_id', 'item_id'
     ];
@@ -52,7 +51,6 @@ class Pembayaran extends Model
                 'transactions.is_deleted' => 0,
                 'transactions.user_id' => $penyewaId,
                 'transactions.tanggal_pembayaran' => NULL,
-                'transactions.bukti_pembayaran' => NULL,
                 'transactions.status_pembayaran' => 3,
             ])
             ->orderBy('transactions.id', 'asc');
@@ -62,13 +60,14 @@ class Pembayaran extends Model
     // Tampered
     public function getPaidPembayaran($penyewaId)
     {
-        $this->select('transactions.*')
+        $this->select('transactions.*, invoices.*')
             ->where('transactions.is_deleted', 0)
+            ->join('invoices', 'transactions.id = invoices.transaction_id')
             ->where('transactions.user_id', $penyewaId)
             ->where('tanggal_pembayaran IS NOT NULL')
             ->groupStart()
-            ->where('bukti_pembayaran IS NOT NULL')
-            ->orWhere('bukti_pembayaran_dp IS NOT NULL')
+            ->where('invoices.bukti_pembayaran IS NOT NULL')
+            ->orWhere('invoices.bukti_pembayaran_dp IS NOT NULL')
             ->groupEnd()
             // ->where('status_pembayaran', 2)
             ->orderBy('transactions.id', 'asc');
@@ -118,8 +117,8 @@ class Pembayaran extends Model
 
     public function getPembayaranBelumBayarWithTenda($penyewaId)
     {
-        $this->select('transactions.*, items.kode, items.nama, items.ukuran, items.harga, items.sisa, items.gambar, items.kategori_id');
-
+        $this->select('transactions.*, invoices.*, items.kode, items.nama, items.ukuran, items.harga, items.sisa, items.gambar, items.kategori_id');
+        $this->join('invoices', 'transactions.id = invoices.transaction_id');
         $this->join('items', 'transactions.item_id = items.id');
 
         $this->where('transactions.is_deleted', 0);
@@ -151,13 +150,14 @@ class Pembayaran extends Model
     // My TAMPERING
     public function getPembayaranByPenyewaAndStatus($penyewaId, $status)
     {
-        $this->select('transactions.*')
+        $this->select('transactions.*, invoices.*')
+            ->join('invoices', 'invoices.transaction_id = transactions.id')
             ->where([
                 'transactions.is_deleted' => 0,
                 'transactions.user_id' => $penyewaId,
                 'transactions.status_pembayaran' => $status,
             ])
-            ->orderBy('transactions.bukti_pembayaran', 'asc')
+            ->orderBy('invoices.bukti_pembayaran', 'asc')
             ->orderBy('transactions.id', 'asc');
         return $this;
     }
@@ -200,13 +200,13 @@ class Pembayaran extends Model
         // Initialize DetailPembayaran model
         $getDetails = new DetailPembayaran();
 
-        $getDetails->select('transactions.*, transaction_details.*, 
+        $getDetails->select('transactions.*, invoices.*, transaction_details.*, 
         items.*')
             ->join('transactions', 'transaction_details.transaction_id = transactions.id')
             ->join('items', 'transaction_details.item_id = items.id')
             ->where('transaction_details.is_deleted', 0)
             ->whereIn('transactions.id', $pembayaranIdList)
-            ->orderBy('transactions.bukti_pembayaran', 'asc')
+            ->orderBy('invoices.bukti_pembayaran', 'asc')
             ->orderBy('transactions.id', 'asc');
 
         return $getDetails;

@@ -39,9 +39,10 @@ class Tenda extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+
     public function getTendasWithKategoris()
     {
-        // Select the columns from 'items' and alias the 'name' column from 'kategoris' as 'kategori_name'
+        // Select the columns from 'items' and alias the 'name' column from 'kategoris' as 'nama_kategori'
         $this->select('items.*, kategoris.nama AS nama_kategori, kategoris.kode AS kode_kategori');
 
         // Perform the join with the 'kategoris' table
@@ -53,7 +54,7 @@ class Tenda extends Model
         // Order the data by 'items.id' in ascending order
         $this->orderBy('items.id', 'asc');
 
-        // Perform the query and return the result
+        // Return the query builder object
         return $this;
     }
 

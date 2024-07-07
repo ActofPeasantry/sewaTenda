@@ -7,6 +7,7 @@ use App\Models\DetailPembayaran;
 use App\Models\Tenda;
 use App\Models\Pembayaran;
 use App\Models\Penyewa;
+use App\Models\Invoice;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use CodeIgniter\I18n\Time;
@@ -148,6 +149,7 @@ class PenyewaController extends BaseController
         $idPembayarans = $this->request->getPost('idPembayarans');
 
         $pembayaranModel = new Pembayaran();
+        $invoiceModel = new Invoice();
 
         $PenyewaModel = new Penyewa();
         $penyewa = $PenyewaModel->find(session()->get('user')['id']);
@@ -197,18 +199,23 @@ class PenyewaController extends BaseController
 
                 foreach ($idPembayarans as $idPembayaran) {
                     $pembayaran = $pembayaranModel->find($idPembayaran);
+                    $invoice = array();
+
                     if ($this->request->getPost('payment_method') == 0) { //Non DP
                         $pembayaran['status_lunas'] = 1;
                         $pembayaran['pakai_dp'] = $this->request->getPost('payment_method');
-                        $pembayaran['bukti_pembayaran'] = $newName;
+                        $invoice['transaction_id'] = $pembayaran['id'];
+                        $invoice['bukti_pembayaran'] = $newName;
                     }
                     if ($this->request->getPost('payment_method') == 1) { //DP
                         $pembayaran['pakai_dp'] = $this->request->getPost('payment_method');
-                        $pembayaran['bukti_pembayaran_dp'] = $newName;
+                        $invoice['transaction_id'] = $pembayaran['id'];
+                        $invoice['bukti_pembayaran_dp'] = $newName;
                     }
                     $pembayaran['tanggal_pembayaran'] = $tanggalPembayaran;
                     $pembayaran['status_pembayaran'] = 2;
                     $pembayaranModel->save($pembayaran);
+                    $invoiceModel->save($invoice);
                 }
                 return redirect()->back()->with('success', 'success');
             } else {

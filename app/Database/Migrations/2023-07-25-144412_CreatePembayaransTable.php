@@ -24,16 +24,8 @@ class CreatePembayaransTable extends Migration
                 'type'       => 'DATETIME',
                 'null'       => true,
             ],
-            'bukti_pembayaran'   => [
-                'type'       => 'TEXT',
-                'null'       => true,
-            ],
             'pakai_dp'      => [
                 'type' => 'BOOLEAN',
-            ],
-            'bukti_pembayaran_dp'   => [
-                'type'       => 'TEXT',
-                'null'       => true,
             ],
             'status_pembayaran'      => [
                 'type' => 'TINYINT',

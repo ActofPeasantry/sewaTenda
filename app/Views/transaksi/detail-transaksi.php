@@ -55,8 +55,11 @@
 										<th>No</th>
 										<th>Alamat Kirim</th>
 										<th>Tanggal Mulai Sewa</th>
+										<th>Tipe Pembayaran</th>
+										<th>Status Lunas</th>
 										<th>Total Biaya</th>
 										<th>Bukti Pembayaran</th>
+										<th>Bukti Pembayaran DP</th>
 										<th>Action</th>
 									</tr>
 								</thead>
@@ -68,9 +71,25 @@
 											<th scope="row"><?= $i ?></th>
 											<td><?= $pembayaran['alamat_kirim'] ?></td>
 											<td><?= $pembayaran['tanggal_mulai_sewa'] ?></td>
+											<?php if ($pembayaran['pakai_dp'] == 0) : ?>
+												<td>
+													<p>Tidak DP</p>
+												</td>
+											<?php else : ?>
+												<td>
+													<p>Dp</p>
+												</td>
+											<?php endif; ?>
+											<td><?= $pembayaran['status_pembayaran'] ?></td>
 											<td><?= $totalBiaya[$i - 1] ?></td>
-											<td><a href="<?= site_url('download/' . $pembayaran['bukti_pembayaran']) ?>" download>
+											<td>
+												<a href="<?= site_url('download/' . $pembayaran['bukti_pembayaran']) ?>" download>
 													<img src=<?= site_url('download/' . $pembayaran['bukti_pembayaran']) ?> alt="Gambar Item" style="max-width: 200px; height: auto;">
+												</a>
+											</td>
+											<td>
+												<a href="<?= site_url('download/' . $pembayaran['bukti_pembayaran_dp']) ?>" download>
+													<img src=<?= site_url('download/' . $pembayaran['bukti_pembayaran_dp']) ?> alt="Gambar Item" style="max-width: 200px; height: auto;">
 												</a>
 											</td>
 											<td>
@@ -135,13 +154,22 @@
 				"width": "5%"
 			},
 			{
+				"width": "5%"
+			},
+			{
 				"width": "10%"
 			},
 			{
-				"width": "5%"
+				"width": "10%"
 			},
 			{
-				"width": "5%"
+				"width": "10%"
+			},
+			{
+				"width": "10%"
+			},
+			{
+				"width": "10%"
 			},
 			{
 				"width": "10%"

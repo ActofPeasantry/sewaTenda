@@ -32,7 +32,7 @@
 										<th>Tanggal Mulai Sewa</th>
 										<th>Tipe Pembayaran</th>
 										<th>Total Biaya</th>
-										<th>Status Pembayaran</th>
+										<th>Status Transaksi</th>
 										<th>Status Lunas</th>
 										<th>Bukti Pembayaran</th>
 										<th>Bukti Pembayaran DP</th>
