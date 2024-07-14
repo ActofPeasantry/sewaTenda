@@ -67,4 +67,16 @@ class User extends Model
     {
         return $this->hasMany(Penyewa::class, 'user_id', 'id');
     }
+
+    public function verifyEmail($email)
+    {
+        $result = $this->select('users.*')->where('email', $email)->where('is_deleted', 0)->get();
+        return $result->getResultArray();
+    }
+
+    public function verrifyToken($id)
+    {
+        $result = $this->select('users.*')->where('id', $id)->where('is_deleted', 0)->get();
+        return $result->getResultArray();
+    }
 }

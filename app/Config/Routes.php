@@ -36,6 +36,10 @@ $routes->addRedirect('/', '/catalog');
 $routes->post('login', 'LoginController::login');
 $routes->get('logout', 'LoginController::logout');
 
+$routes->get('/forgot-password', 'LoginController::forgotPasswordView');
+$routes->post('forgot-password', 'LoginController::submitForgotPassword');
+$routes->get('reset-password/(:num)', 'LoginController::resetPasswordView/$1');
+
 $routes->group('', ['filter' => 'admRole'], function ($routes) {
 
     $routes->get('/dashboard', 'Home::index');

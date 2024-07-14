@@ -64,4 +64,76 @@ class LoginController extends BaseController
         session()->destroy();
         return redirect()->to('/login');
     }
+
+    public function forgotPasswordView()
+    {
+
+        $data = [
+            'cardReload' => '',
+            'headerTitle' => 'Forgot Password',
+            'cardAlignment' => 'text-center',
+            'breadcrumbLink' => '<a href="/catalog">Catalog</a>'
+        ];
+        return view('forgot-password', $data);
+    }
+
+    public function submitForgotPassword()
+    {
+        $data = [
+            'cardReload' => '',
+            'headerTitle' => 'Forgot Password',
+            'cardAlignment' => 'text-center',
+            'breadcrumbLink' => '<a href="/catalog">Catalog</a>'
+        ];
+
+        $email = $this->request->getPost('email');
+        $userModel = new User();
+        $userData = $userModel->verifyEmail($email);
+        // var_dump(!empty($userData));
+        if (!empty($userData)) {
+            $to = $email;
+            $subject = 'Reset Password';
+            $token = $userData[0]['id'];
+            $message = 'Hello ' . $userData[0]['username'] . ',<br><br> Click the link dibawah untuk me-reset password anda:<br> <a href="' . base_url() . '/reset-password/' . $token . '">Reset Password</a>';
+            $email = \Config\Services::email();
+            $email->setTo($to);
+            $email->setFrom('sewatendawahyukhan@gmail.com', 'Admin');
+            $email->setMessage($message);
+            $email->setSubject($subject);
+            if ($email->send()) {
+                return redirect()->back()->with('success', 'Email reset password terkirim');
+            } else {
+                return redirect()->back()->with('error', 'Email reset password gagal dikirim');
+            }
+        } else {
+            return redirect()->back()->with('error', 'Email tidak ditemukan');
+        }
+        return view('forgot-password', $data);
+    }
+
+    public function resetPasswordView($token)
+    {
+        $userModel = new User();
+
+        if (!empty($token)) {
+            $userData = $userModel->verrifyToken($token);
+            if (!empty($userData)) {
+                $data = [
+                    'cardReload' => '',
+                    'headerTitle' => 'Reset Password',
+                    'cardAlignment' => 'text-center',
+                    'breadcrumbLink' => '<a href="/catalog">Catalog</a>',
+                ];
+                return view('reset-password', $data);
+            }
+        }
+        $data = [
+            'cardReload' => '',
+            'headerTitle' => 'Forgot Password',
+            'cardAlignment' => 'text-center',
+            'breadcrumbLink' => '<a href="/catalog">Catalog</a>',
+            'error' => 'Unable to find user',
+        ];
+        return view('forgot-password', $data);
+    }
 }
