@@ -38,7 +38,8 @@ $routes->get('logout', 'LoginController::logout');
 
 $routes->get('/forgot-password', 'LoginController::forgotPasswordView');
 $routes->post('forgot-password', 'LoginController::submitForgotPassword');
-$routes->get('reset-password/(:num)', 'LoginController::resetPasswordView/$1');
+$routes->get('/reset-password/(:num)', 'LoginController::resetPasswordView/$1');
+$routes->post('/reset-password', 'LoginController::submitResetPassword');
 
 $routes->group('', ['filter' => 'admRole'], function ($routes) {
 

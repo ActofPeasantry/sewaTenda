@@ -43,7 +43,7 @@
 									<?php $i = 1 ?>
 									<?php foreach ($pembayaranSudahBayarList as $pembayaranSudahBayar) : ?>
 										<tr>
-											<td><input type="checkbox" value=<?= $pembayaranSudahBayar['id'] ?> name="idPembayarans1[]" <?= $pembayaranSudahBayar['status_pembayaran'] == 1 ? "" : "disabled" ?>></td>
+											<td><input type="checkbox" value=<?= $pembayaranSudahBayar['transaction_id'] ?> name="idPembayarans1[]" <?= $pembayaranSudahBayar['status_pembayaran'] == 1 ? "" : "disabled" ?>></td>
 											<td><?= $i ?></td>
 											<td><?= $pembayaranSudahBayar['alamat_kirim'] ?></td>
 											<td><?= $pembayaranSudahBayar['tanggal_mulai_sewa'] ?></td>
@@ -56,7 +56,9 @@
 													<p>Dp</p>
 												</td>
 											<?php endif; ?>
+
 											<td> IDR <?= number_format($totalBiaya[$i - 1], 2, '.', ','); ?> </td>
+
 											<?php if ($pembayaranSudahBayar['status_pembayaran'] == 1) : ?>
 												<td>
 													<p><code class="highlighter-rouge success">Selesai</code></p>
@@ -65,14 +67,28 @@
 												<td>
 													<p><code class="highlighter-rouge warning">Sedang Proses</code></p>
 												</td>
+											<?php elseif ($pembayaranSudahBayar['status_pembayaran'] == 4) : ?>
+												<td>
+													<p><code class="highlighter-rouge info">DP Diterima</code></p>
+												</td>
 											<?php else : ?>
 												<td>
 													<p><code class="highlighter-rouge danger">Dibatalkan</code></p>
 												</td>
 											<?php endif; ?>
+
+
 											<?php if ($pembayaranSudahBayar['status_lunas'] == 0) : ?>
 												<td>
 													<p><code class="highlighter-rouge danger">Belum Lunas</code></p>
+												</td>
+											<?php elseif ($pembayaranSudahBayar['status_lunas'] == 2) : ?>
+												<td>
+													<p><code class="highlighter-rouge info">Sudah Bayar DP</code></p>
+												</td>
+											<?php elseif ($pembayaranSudahBayar['status_lunas'] == 3) : ?>
+												<td>
+													<p><code class="highlighter-rouge info">Sudah Bayar Full</code></p>
 												</td>
 											<?php else : ?>
 												<td>
@@ -97,12 +113,12 @@
 											</td>
 
 											<td>
-												<button type="button" class="btn btn-sm btn-info show-button" data-toggle="modal" data-target="#modal-pesanan" data-id="<?= $pembayaranSudahBayar['id'] ?>">
+												<button type="button" class="btn btn-sm btn-info show-button" data-toggle="modal" data-target="#modal-pesanan" data-id="<?= $pembayaranSudahBayar['transaction_id'] ?>">
 													<i class="ft-edit"></i> Detail</a>
 												</button>
 
-												<?php if ($pembayaranSudahBayar['status_lunas'] == 0) : ?>
-													<button type="button" class="btn btn-sm btn-success pay-button" data-toggle="modal" data-target="#modal-lunas" data-id="<?= $pembayaranSudahBayar['id'] ?>">
+												<?php if ($pembayaranSudahBayar['status_lunas'] == 0 || $pembayaranSudahBayar['status_lunas'] == 2) : ?>
+													<button type="button" class="btn btn-sm btn-success pay-button" data-toggle="modal" data-target="#modal-lunas" data-id="<?= $pembayaranSudahBayar['transaction_id'] ?>">
 														<i class="ft-edit"></i> Lunaskan Pesanan
 													</button>
 												<?php endif; ?>
@@ -254,7 +270,7 @@
 				url: '/pesanan/detail/' + id,
 				dataType: 'json',
 				success: function(response) {
-					// console.log(response);
+					console.log(response);
 					if (response && response.length > 0) {
 						$('.detail-table tbody').empty();
 

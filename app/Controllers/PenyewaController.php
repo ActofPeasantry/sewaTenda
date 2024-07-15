@@ -202,12 +202,13 @@ class PenyewaController extends BaseController
                     $invoice = array();
 
                     if ($this->request->getPost('payment_method') == 0) { //Non DP
-                        $pembayaran['status_lunas'] = 1;
+                        $pembayaran['status_lunas'] = 3; //sudah bayar full
                         $pembayaran['pakai_dp'] = $this->request->getPost('payment_method');
                         $invoice['transaction_id'] = $pembayaran['id'];
                         $invoice['bukti_pembayaran'] = $newName;
                     }
                     if ($this->request->getPost('payment_method') == 1) { //DP
+                        $pembayaran['status_lunas'] = 2; //sudah bayar DP
                         $pembayaran['pakai_dp'] = $this->request->getPost('payment_method');
                         $invoice['transaction_id'] = $pembayaran['id'];
                         $invoice['bukti_pembayaran_dp'] = $newName;
@@ -263,6 +264,9 @@ class PenyewaController extends BaseController
         $pembayaranModel = new Pembayaran();
         $pembayaran = $pembayaranModel->find($idPembayaran);
 
+        $invoiceModel = new Invoice();
+        $invoice = $invoiceModel->where('transaction_id', $idPembayaran)->first();
+
         $filebuktiPembayaran = $this->request->getFile('bukti');
         $newName = md5(uniqid(rand(), true)) . '.' . $filebuktiPembayaran->getExtension();
         // Move the file to the uploads directory with the new name
@@ -270,10 +274,14 @@ class PenyewaController extends BaseController
 
         $tanggalPembayaran = $this->request->getPost('tanggalPembayaran');
 
-        $pembayaran['status_lunas'] = 1;
-        $pembayaran['bukti_pembayaran'] = $newName;
+        // update data
+        $pembayaran['status_pembayaran'] = 2; //balik ke proses
+        $pembayaran['status_lunas'] = 3; //sudah bayar full
         $pembayaran['tanggal_pembayaran'] = $tanggalPembayaran;
+        $invoice['transaction_id'] = $idPembayaran;
+        $invoice['bukti_pembayaran'] = $newName;
         $pembayaranModel->save($pembayaran);
+        $invoiceModel->save($invoice);
 
         return redirect()->back()->with('success', 'success');
     }

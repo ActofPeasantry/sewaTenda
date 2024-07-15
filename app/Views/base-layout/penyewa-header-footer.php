@@ -14,18 +14,21 @@
   <link href="https://fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600,600i,700,700i%7CComfortaa:300,400,700" rel="stylesheet">
   <link href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome.min.css" rel="stylesheet">
   <!-- BEGIN VENDOR CSS-->
-  <link rel="stylesheet" type="text/css" href="theme-assets/css/vendors.css">
-  <link rel="stylesheet" type="text/css" href="theme-assets/vendors/css/charts/chartist.css">
+  <link rel="stylesheet" type="text/css" href="<?= base_url('theme-assets/css/vendors.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?= base_url('theme-assets/vendors/css/charts/chartist.css') ?>">
   <!-- END VENDOR CSS-->
-  <!-- BEGIN CHAMELEON  CSS-->
-  <link rel="stylesheet" type="text/css" href="theme-assets/css/app-lite.css">
-  <!-- END CHAMELEON  CSS-->
+
+  <!-- BEGIN CHAMELEON CSS-->
+  <link rel="stylesheet" type="text/css" href="<?= base_url('theme-assets/css/app-lite.css') ?>">
+  <!-- END CHAMELEON CSS-->
+
   <!-- BEGIN Page Level CSS-->
-  <link rel="stylesheet" type="text/css" href="theme-assets/css/core/menu/menu-types/vertical-menu.css">
-  <link rel="stylesheet" type="text/css" href="theme-assets/css/core/colors/palette-gradient.css">
-  <link rel="stylesheet" type="text/css" href="theme-assets/css/pages/dashboard-ecommerce.css">
-  <link href="datatables/datatables.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="<?= base_url('theme-assets/css/core/menu/menu-types/vertical-menu.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?= base_url('theme-assets/css/core/colors/palette-gradient.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?= base_url('theme-assets/css/pages/dashboard-ecommerce.css') ?>">
+  <link rel="stylesheet" type="text/css" href="<?= base_url('datatables/datatables.min.css') ?>">
   <!-- END Page Level CSS-->
+
   <!-- BEGIN Custom CSS-->
   <!-- END Custom CSS-->
   <?= $this->renderSection('link') ?>
@@ -63,7 +66,7 @@
                 </div>
               </li>
             <?php else : ?>
-              <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" style="pointer-events: none; cursor: not-allowed;"><span class="avatar avatar-online"><img src="favicon.jpg" alt="avatar"></span></a></li>
+              <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" style="pointer-events: none; cursor: not-allowed;"><span class="avatar avatar-online"><img src="<?= base_url('favicon.jpg') ?>" alt="avatar"></span></a></li>
             <?php endif; ?>
           </ul>
         </div>
@@ -79,7 +82,7 @@
       <div class="content-header row">
         <div class="content-header-left col-md-4 col-12 mb-2">
 
-          <h3 class="content-header-title"><span class="avatar avatar-online"><img src="favicon.jpg" alt="avatar"></span> <?= $headerTitle; ?></h3>
+          <h3 class="content-header-title"><span class="avatar avatar-online"><img src="<?= base_url('favicon.jpg') ?>" alt="avatar"></span> <?= $headerTitle; ?></h3>
         </div>
         <div class="content-header-right col-md-8 col-12">
           <div class="breadcrumbs-top float-md-right">
@@ -108,19 +111,23 @@
   </footer>
 
   <!-- BEGIN VENDOR JS-->
-  <script src="theme-assets/vendors/js/vendors.min.js" type="text/javascript"></script>
-  <!-- BEGIN VENDOR JS-->
+  <script src="<?= base_url('theme-assets/vendors/js/vendors.min.js') ?>" type="text/javascript"></script>
+  <!-- END VENDOR JS-->
+
   <!-- BEGIN PAGE VENDOR JS-->
-  <script src="theme-assets/vendors/js/charts/chartist.min.js" type="text/javascript"></script>
+  <script src="<?= base_url('theme-assets/vendors/js/charts/chartist.min.js') ?>" type="text/javascript"></script>
   <!-- END PAGE VENDOR JS-->
-  <!-- BEGIN CHAMELEON  JS-->
-  <script src="theme-assets/js/core/app-menu-lite.js" type="text/javascript"></script>
-  <script src="theme-assets/js/core/app-lite.js" type="text/javascript"></script>
-  <!-- END CHAMELEON  JS-->
+
+  <!-- BEGIN CHAMELEON JS-->
+  <script src="<?= base_url('theme-assets/js/core/app-menu-lite.js') ?>" type="text/javascript"></script>
+  <script src="<?= base_url('theme-assets/js/core/app-lite.js') ?>" type="text/javascript"></script>
+  <!-- END CHAMELEON JS-->
+
   <!-- BEGIN PAGE LEVEL JS-->
-  <script src="theme-assets/js/scripts/pages/dashboard-lite.js" type="text/javascript"></script>
+  <script src="<?= base_url('theme-assets/js/scripts/pages/dashboard-lite.js') ?>" type="text/javascript"></script>
   <!-- END PAGE LEVEL JS-->
-  <script src="datatables/datatables.min.js"></script>
+
+  <script src="<?= base_url('datatables/datatables.min.js') ?>"></script>
   <?= $this->renderSection('js') ?>
 </body>
 

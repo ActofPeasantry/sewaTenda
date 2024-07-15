@@ -87,7 +87,6 @@ class TransaksiController extends BaseController
             'status' => $this->request->getPost('status'),
             'totalBiaya' => $getCost
         ];
-
         return view('transaksi/detail-transaksi', $data);
     }
 
@@ -139,8 +138,18 @@ class TransaksiController extends BaseController
         } else {
             foreach ($idPembayarans as $idPembayaran) {
                 $pembayaran = $pembayaranModel->find($idPembayaran);
-                $pembayaran['catatan'] = $this->request->getPost('catatan');
-                $pembayaran['status_pembayaran'] = $this->request->getPost('sudahBayar');
+
+                if ($pembayaran['status_lunas'] == 2 && $this->request->getPost('sudahBayar') == 1) {
+                    $pembayaran['catatan'] = $this->request->getPost('catatan');
+                    $pembayaran['status_pembayaran'] = 4;
+                } else {
+                    $pembayaran['catatan'] = $this->request->getPost('catatan');
+                    $pembayaran['status_pembayaran'] = $this->request->getPost('sudahBayar');
+                    if ($this->request->getPost('sudahBayar') == 1) {
+                        $pembayaran['status_lunas'] = 1;
+                    }
+                }
+
 
                 $pembayaranModel->save($pembayaran);
             }

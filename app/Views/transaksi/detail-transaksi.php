@@ -56,6 +56,7 @@
 										<th>Alamat Kirim</th>
 										<th>Tanggal Mulai Sewa</th>
 										<th>Tipe Pembayaran</th>
+										<th>Status Transaksi</th>
 										<th>Status Lunas</th>
 										<th>Total Biaya</th>
 										<th>Bukti Pembayaran</th>
@@ -67,10 +68,11 @@
 									<?php $i = 1 ?>
 									<?php foreach ($pembayaranList as $pembayaran) : ?>
 										<tr>
-											<td><input type="checkbox" value=<?= $pembayaran['id'] ?> name="idPembayarans[]"></td>
+											<td><input type="checkbox" value=<?= $pembayaran['transaction_id'] ?> name="idPembayarans[]"></td>
 											<th scope="row"><?= $i ?></th>
 											<td><?= $pembayaran['alamat_kirim'] ?></td>
 											<td><?= $pembayaran['tanggal_mulai_sewa'] ?></td>
+
 											<?php if ($pembayaran['pakai_dp'] == 0) : ?>
 												<td>
 													<p>Tidak DP</p>
@@ -80,8 +82,45 @@
 													<p>Dp</p>
 												</td>
 											<?php endif; ?>
-											<td><?= $pembayaran['status_pembayaran'] ?></td>
-											<td><?= $totalBiaya[$i - 1] ?></td>
+
+											<?php if ($pembayaran['status_pembayaran'] == 1) : ?>
+												<td>
+													<p><code class="highlighter-rouge success">Selesai</code></p>
+												</td>
+											<?php elseif ($pembayaran['status_pembayaran'] == 2) : ?>
+												<td>
+													<p><code class="highlighter-rouge warning">Sedang Proses</code></p>
+												</td>
+											<?php elseif ($pembayaran['status_pembayaran'] == 4) : ?>
+												<td>
+													<p><code class="highlighter-rouge info">DP Diterima</code></p>
+												</td>
+											<?php else : ?>
+												<td>
+													<p><code class="highlighter-rouge danger">Dibatalkan</code></p>
+												</td>
+											<?php endif; ?>
+
+											<?php if ($pembayaran['status_lunas'] == 0) : ?>
+												<td>
+													<p><code class="highlighter-rouge danger">Belum Lunas</code></p>
+												</td>
+											<?php elseif ($pembayaran['status_lunas'] == 2) : ?>
+												<td>
+													<p><code class="highlighter-rouge info">Sudah Bayar DP</code></p>
+												</td>
+											<?php elseif ($pembayaran['status_lunas'] == 3) : ?>
+												<td>
+													<p><code class="highlighter-rouge info">Sudah Bayar Full</code></p>
+												</td>
+											<?php else : ?>
+												<td>
+													<p><code class="highlighter-rouge success">Lunas</code></p>
+												</td>
+											<?php endif; ?>
+
+
+											<td> IDR <?= number_format($totalBiaya[$i - 1], 2, '.', ','); ?> </td>
 											<td>
 												<a href="<?= site_url('download/' . $pembayaran['bukti_pembayaran']) ?>" download>
 													<img src=<?= site_url('download/' . $pembayaran['bukti_pembayaran']) ?> alt="Gambar Item" style="max-width: 200px; height: auto;">
@@ -93,7 +132,7 @@
 												</a>
 											</td>
 											<td>
-												<button type="button" class="btn btn-sm btn-info show-button" data-toggle="modal" data-target="#modal-pesanan" data-id="<?= $pembayaran['id'] ?>">
+												<button type="button" class="btn btn-sm btn-info show-button" data-toggle="modal" data-target="#modal-pesanan" data-id="<?= $pembayaran['transaction_id'] ?>">
 													<i class="ft-edit"></i> Detail</a>
 												</button>
 											</td>
@@ -155,6 +194,9 @@
 			},
 			{
 				"width": "5%"
+			},
+			{
+				"width": "10%"
 			},
 			{
 				"width": "10%"

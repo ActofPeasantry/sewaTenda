@@ -39,7 +39,7 @@ class LoginController extends BaseController
 
         $user = $userModel->where('email', $email)->first();
 
-        if ($user && password_verify($password, $user['password'])) {
+        if ($user && password_verify($password[0], $user['password'])) {
 
             $role = $roleModel->find($user['role_id']);
             // $penyewa = $penyewaModel->where('user_id', $user['id'])->first();
@@ -123,6 +123,7 @@ class LoginController extends BaseController
                     'headerTitle' => 'Reset Password',
                     'cardAlignment' => 'text-center',
                     'breadcrumbLink' => '<a href="/catalog">Catalog</a>',
+                    'token' => $token
                 ];
                 return view('reset-password', $data);
             }
@@ -134,6 +135,31 @@ class LoginController extends BaseController
             'breadcrumbLink' => '<a href="/catalog">Catalog</a>',
             'error' => 'Unable to find user',
         ];
+
         return view('forgot-password', $data);
+    }
+
+    public function submitResetPassword()
+    {
+
+        // Load the session and validation services
+        $session = session();
+
+        $password = $this->request->getPost('password');
+        $userId = $this->request->getPost('token');
+
+        $userModel = new User();
+        $user = $userModel->find($userId);
+
+        if ($user) {
+            $user['password'] = password_hash($password[0], PASSWORD_DEFAULT);
+            $userModel->save($user);
+
+            $session->setFlashdata('success', 'Password successfully updated.');
+            return redirect()->to('/login');
+        } else {
+            $session->setFlashdata('error', 'User not found.');
+            return redirect()->to('/reset-password');
+        }
     }
 }

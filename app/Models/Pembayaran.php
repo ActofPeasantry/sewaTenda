@@ -46,7 +46,7 @@ class Pembayaran extends Model
 
     public function getUnpaidPembayaran($penyewaId)
     {
-        $this->select('transactions.*')
+        $this->select('transactions.*, transactions.id as transaction_id')
             ->where([
                 'transactions.is_deleted' => 0,
                 'transactions.user_id' => $penyewaId,
@@ -60,11 +60,12 @@ class Pembayaran extends Model
     // Tampered
     public function getPaidPembayaran($penyewaId)
     {
-        $this->select('transactions.*, invoices.*')
+        $this->select('transactions.*, invoices.*, transactions.id as transaction_id')
             ->where('transactions.is_deleted', 0)
             ->join('invoices', 'transactions.id = invoices.transaction_id')
             ->where('transactions.user_id', $penyewaId)
             ->where('tanggal_pembayaran IS NOT NULL')
+
             ->groupStart()
             ->where('invoices.bukti_pembayaran IS NOT NULL')
             ->orWhere('invoices.bukti_pembayaran_dp IS NOT NULL')
@@ -90,7 +91,7 @@ class Pembayaran extends Model
             $total_cost_data = [];
             foreach ($getPembayarans as $getPembayaran) {
                 // Retrieve the first unpaid pembayaran ID
-                $pembayaranId = $getPembayaran['id'];
+                $pembayaranId = $getPembayaran['transaction_id'];
 
                 // Initialize DetailPembayaran model
                 $getDetails = new DetailPembayaran();
@@ -150,7 +151,7 @@ class Pembayaran extends Model
     // My TAMPERING
     public function getPembayaranByPenyewaAndStatus($penyewaId, $status)
     {
-        $this->select('transactions.*, invoices.*')
+        $this->select('transactions.*, invoices.*, transactions.id as transaction_id')
             ->join('invoices', 'invoices.transaction_id = transactions.id')
             ->where([
                 'transactions.is_deleted' => 0,
@@ -170,7 +171,7 @@ class Pembayaran extends Model
             $total_cost_data = [];
             foreach ($getPembayarans as $getPembayaran) {
                 // Retrieve the first unpaid pembayaran ID
-                $pembayaranId = $getPembayaran['id'];
+                $pembayaranId = $getPembayaran['transaction_id'];
 
                 // Initialize DetailPembayaran model
                 $getDetails = new DetailPembayaran();
@@ -200,13 +201,12 @@ class Pembayaran extends Model
         // Initialize DetailPembayaran model
         $getDetails = new DetailPembayaran();
 
-        $getDetails->select('transactions.*, invoices.*, transaction_details.*, 
+        $getDetails->select('transactions.*, transaction_details.*, 
         items.*')
             ->join('transactions', 'transaction_details.transaction_id = transactions.id')
             ->join('items', 'transaction_details.item_id = items.id')
             ->where('transaction_details.is_deleted', 0)
             ->whereIn('transactions.id', $pembayaranIdList)
-            ->orderBy('invoices.bukti_pembayaran', 'asc')
             ->orderBy('transactions.id', 'asc');
 
         return $getDetails;

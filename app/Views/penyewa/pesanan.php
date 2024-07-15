@@ -87,7 +87,7 @@
 											<td><input type="checkbox" value=<?= $pembayaranBelumBayar['id'] ?> name="idPembayarans[]"></td>
 											<td><?= $pembayaranBelumBayar['alamat_kirim'] ?></td>
 											<td><?= $pembayaranBelumBayar['tanggal_mulai_sewa'] ?></td>
-											<td><?= $totalBiaya[$n] ?></td>
+											<td> IDR <?= number_format($totalBiaya[$n], 2, '.', ','); ?> </td>
 											<td>
 												<button type="button" class="btn btn-sm btn-info show-button" data-toggle="modal" data-target="#modal-pesanan" data-id="<?= $pembayaranBelumBayar['id'] ?>">
 													<i class="ft-edit"></i> Detail</a>

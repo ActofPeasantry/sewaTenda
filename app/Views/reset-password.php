@@ -14,26 +14,38 @@
       </div>
       <div class="card-content collapse show">
         <div class="card-body">
-          <h1>Halaman Lupa Password</h1>
+          <h1>Ubah Password</h1>
 
           <?php if (isset($validation)) : ?>
             <div class="alert alert-danger">
-              <?php $validation->listErrors() ?>
+              <?= $validation->listErrors() ?>
+            </div>
+          <?php endif; ?>
+
+          <?php if (session()->getFlashdata('error')) : ?>
+            <div class="alert alert-danger">
+              <?= session()->getFlashdata('error') ?>
+            </div>
+          <?php endif; ?>
+
+          <?php if (session()->getFlashdata('success')) : ?>
+            <div class="alert alert-success">
+              <?= session()->getFlashdata('success') ?>
             </div>
           <?php endif; ?>
 
           <div class="col-md-3 mx-auto text-center">
-            <form class="form" action="<?= site_url('forgot-password') ?>" method="post">
+            <form class="form" action="<?= site_url('reset-password') ?>" method="post">
               <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" />
               <div class="form-body">
                 <div class="form-group">
-                  <label for="donationinput3" class="sr-only">E-mail</label>
-                  <input type="email" id="donationinput3" class="form-control" placeholder="E-mail" name="email">
+                  <label for="password" class="sr-only">Password</label>
+                  <input type="password" id="password" class="form-control" placeholder="Password" name="password">
                 </div>
-
+                <input type="hidden" name="token" value="<?= $token ?>">
               </div>
               <div class="form-actions center">
-                <button type="submit" class="btn btn-info btn-min-width mr-1 mb-1">Reset Password</button>
+                <button type="submit" class="btn btn-info btn-min-width mr-1 mb-1">Confirm Password</button>
               </div>
               <div class="center">
                 <p>Belum Punya Akun? Silahkan <a href="/register-update-account" class="danger"><code class="highlighter-rouge">Daftar.</code></a></p>
